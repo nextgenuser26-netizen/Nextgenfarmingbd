@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-green: #059669;
+  --color-brand-green-dark: #064e3b;
+  --color-brand-green-deep: #065F46;
+  --color-brand-red: #ef4444;
+  --color-brand-bg: #FDFCF0;
+  --font-sans: var(--font-inter), var(--font-bengali), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply antialiased text-slate-800 bg-brand-bg;
+}
+
+.font-bengali {
+  font-family: var(--font-bengali);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
