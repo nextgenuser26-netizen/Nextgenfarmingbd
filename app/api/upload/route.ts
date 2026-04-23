@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
+import { v2 as cloudinary } from 'cloudinary';
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,52 +45,42 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Check if running on Netlify (use Netlify Blobs) or local (use file system)
-    const isNetlify = process.env.NETLIFY === 'true' || process.env.NETLIFY_BLOBS_CONTEXT === 'true';
+    // Upload to Cloudinary
+    const uploadedUrls: string[] = [];
+    for (const file of files) {
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
 
-    if (isNetlify) {
-      // Use Netlify Blobs for production
-      const { getStore } = await import('@netlify/blobs');
-      const store = getStore({ name: 'product-images' });
+      // Convert buffer to base64 for Cloudinary upload
+      const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
-      const uploadedUrls: string[] = [];
-      for (const file of files) {
-        const bytes = await file.arrayBuffer();
-        const timestamp = Date.now();
-        const randomString = Math.random().toString(36).substring(2, 15);
-        const extension = file.name.split('.').pop() || 'jpg';
-        const filename = `${timestamp}-${randomString}.${extension}`;
+      const result = await new Promise<any>((resolve, reject) => {
+        cloudinary.uploader.upload(
+          base64,
+          {
+            folder: 'nextgenfarming/products',
+            resource_type: 'image',
+            transformation: [
+              { quality: 'auto', fetch_format: 'auto' },
+              { width: 800, height: 800, crop: 'limit' },
+            ],
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+      });
 
-        await store.set(filename, bytes);
-        uploadedUrls.push(`/api/blobs/${filename}`);
-      }
-
-      return NextResponse.json({ urls: uploadedUrls }, { status: 200 });
-    } else {
-      // Use local file system for development
-      const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-      if (!existsSync(uploadsDir)) {
-        await mkdir(uploadsDir, { recursive: true });
-      }
-
-      const uploadedUrls: string[] = [];
-      for (const file of files) {
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-        const timestamp = Date.now();
-        const randomString = Math.random().toString(36).substring(2, 15);
-        const extension = path.extname(file.name);
-        const filename = `${timestamp}-${randomString}${extension}`;
-        const filepath = path.join(uploadsDir, filename);
-
-        await writeFile(filepath, buffer);
-        uploadedUrls.push(`/uploads/${filename}`);
-      }
-
-      return NextResponse.json({ urls: uploadedUrls }, { status: 200 });
+      uploadedUrls.push(result.secure_url);
     }
+
+    return NextResponse.json({ urls: uploadedUrls }, { status: 200 });
   } catch (error) {
     console.error('Error uploading files:', error);
-    return NextResponse.json({ error: 'Failed to upload files' }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Failed to upload files' },
+      { status: 500 }
+    );
   }
 }
