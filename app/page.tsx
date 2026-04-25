@@ -20,6 +20,7 @@ export default function Home() {
   const [copiedCoupon, setCopiedCoupon] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState<any>(null);
+  const [countdown, setCountdown] = useState({ hours: 12, minutes: 45, seconds: 30 });
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -65,6 +66,41 @@ export default function Home() {
 
     fetchAllData();
   }, []);
+
+  // Countdown timer effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown(prev => {
+        let { hours, minutes, seconds } = prev;
+        
+        if (seconds > 0) {
+          seconds--;
+        } else if (minutes > 0) {
+          minutes--;
+          seconds = 59;
+        } else if (hours > 0) {
+          hours--;
+          minutes = 59;
+          seconds = 59;
+        } else {
+          // Reset countdown to 12 hours when it reaches zero
+          hours = 12;
+          minutes = 0;
+          seconds = 0;
+        }
+        
+        return { hours, minutes, seconds };
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Convert numbers to Bengali numerals
+  const toBengaliNum = (num: number): string => {
+    const bengaliNums = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    return num.toString().split('').map(d => bengaliNums[parseInt(d)]).join('');
+  };
 
   const handleCopyCoupon = (code: string) => {
     navigator.clipboard.writeText(code);
@@ -168,9 +204,9 @@ export default function Home() {
                  <span className="text-slate-400 text-xs font-black uppercase tracking-widest hidden md:block">অফার শেষ হতে বাকি:</span>
                  <div className="flex gap-2">
                     {[
-                      { l: 'Hrs', v: '১২' },
-                      { l: 'Min', v: '৪৫' },
-                      { l: 'Sec', v: '৩০' }
+                      { l: 'Hrs', v: toBengaliNum(countdown.hours) },
+                      { l: 'Min', v: toBengaliNum(countdown.minutes) },
+                      { l: 'Sec', v: toBengaliNum(countdown.seconds) }
                     ].map((t, i) => (
                       <div key={i} className="flex flex-col items-center">
                         <div className="bg-brand-red text-white w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center text-base md:text-lg font-black shadow-lg shadow-brand-red/20">
