@@ -53,8 +53,8 @@ export default function AboutPage() {
           <div className="relative">
              <div className="relative h-[600px] w-full">
                <Image 
-                  src="https://picsum.photos/seed/farming-story/1000/1200" 
-                  alt="Our Sourcing Journey" 
+                  src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1000&h=1200&fit=crop" 
+                  alt="Our Sourcing Journey - Organic Farming" 
                   fill
                   className="rounded-[4rem] object-cover shadow-2xl skew-y-1"
                   referrerPolicy="no-referrer"
