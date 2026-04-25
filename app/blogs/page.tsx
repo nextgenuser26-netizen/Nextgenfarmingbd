@@ -28,7 +28,6 @@ export default function BlogsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchBlogs();
@@ -41,8 +40,6 @@ export default function BlogsPage() {
       setBlogPosts(data.blogs || []);
     } catch (error) {
       console.error('Error fetching blogs:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -106,15 +103,8 @@ export default function BlogsPage() {
           {/* Main Content Area */}
           <div className="lg:col-span-8 space-y-16">
             
-            {/* Loading State */}
-            {loading && (
-              <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 text-brand-green animate-spin" />
-              </div>
-            )}
-
             {/* Featured Post (First one) */}
-            {!loading && featuredPost ? (
+            {featuredPost ? (
               <article className="relative bg-white rounded-[3.5rem] overflow-hidden shadow-2xl shadow-brand-green/5 border border-emerald-50 group">
                 <Link href={`/blogs/${featuredPost.slug}`}>
                   <div className="relative h-[400px] md:h-[500px]">
@@ -141,7 +131,7 @@ export default function BlogsPage() {
                   </div>
                 </Link>
               </article>
-            ) : !loading && (
+            ) : (
               <div className="py-20 text-center bg-white rounded-[3.5rem] border border-dashed border-slate-200">
                 <p className="text-slate-400 italic">কোনো পোস্ট পাওয়া যায়নি।</p>
               </div>

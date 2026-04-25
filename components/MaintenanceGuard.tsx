@@ -6,7 +6,6 @@ import { useAuth } from '@/lib/AuthContext';
 
 export default function MaintenanceGuard({ children }: { children: React.ReactNode }) {
   const [maintenanceMode, setMaintenanceMode] = useState(false);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
   const { isAdmin, user } = useAuth();
@@ -24,14 +23,10 @@ export default function MaintenanceGuard({ children }: { children: React.ReactNo
       setMaintenanceMode(data.settings?.maintenanceMode || false);
     } catch (error) {
       console.error('Error checking maintenance mode:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (loading) return;
-
     // Allow access to public paths
     const isPublicPath = PUBLIC_PATHS.some(path => pathname.startsWith(path));
     if (isPublicPath) {
@@ -44,15 +39,7 @@ export default function MaintenanceGuard({ children }: { children: React.ReactNo
         router.push('/maintenance');
       }
     }
-  }, [maintenanceMode, isAdmin, pathname, loading, router]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-      </div>
-    );
-  }
+  }, [maintenanceMode, isAdmin, pathname, router]);
 
   return <>{children}</>;
 }

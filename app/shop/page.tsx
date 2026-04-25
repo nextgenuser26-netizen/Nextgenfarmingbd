@@ -21,9 +21,7 @@ function ShopContent() {
   const [maxPrice, setMaxPrice] = useState(6000);
   const [searchQuery, setSearchQuery] = useState(searchParam);
   const [categories, setCategories] = useState<any[]>([]);
-  const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
-  const [productsLoading, setProductsLoading] = useState(true);
   const [allPagesBanner, setAllPagesBanner] = useState<any>(null);
 
   useEffect(() => {
@@ -52,8 +50,6 @@ function ShopContent() {
       setCategories(data.categories || []);
     } catch (error) {
       console.error('Error fetching categories:', error);
-    } finally {
-      setCategoriesLoading(false);
     }
   };
 
@@ -64,8 +60,6 @@ function ShopContent() {
       setProducts(data.products || []);
     } catch (error) {
       console.error('Error fetching products:', error);
-    } finally {
-      setProductsLoading(false);
     }
   };
 
@@ -112,21 +106,6 @@ function ShopContent() {
 
     return result;
   }, [selectedCategory, sortBy, maxPrice, searchQuery, products]);
-
-  if (productsLoading || categoriesLoading) {
-    return (
-      <main className="min-h-screen bg-brand-bg pb-20">
-        <Header />
-        <div className="flex items-center justify-center py-32">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-brand-green border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-slate-500 font-bold italic">Loading products...</p>
-          </div>
-        </div>
-        <Footer />
-      </main>
-    );
-  }
 
   return (
     <main className="min-h-screen bg-brand-bg pb-20">
@@ -224,7 +203,7 @@ function ShopContent() {
                     <span className={`text-[10px] px-2 py-0.5 rounded-full ${selectedCategory === 'All' ? 'bg-white/20' : 'bg-emerald-50 group-hover:bg-brand-green group-hover:text-white'}`}>{products.length}</span>
                   </button>
                   
-                  {categories.map((cat: any) => (
+                  {categories.length > 0 ? categories.map((cat: any) => (
                     <div key={cat._id} className="space-y-1">
                       <button
                         onClick={() => setSelectedCategory(cat.name_en)}
@@ -263,7 +242,11 @@ function ShopContent() {
                         )}
                       </AnimatePresence>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-green"></div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -345,20 +328,26 @@ function ShopContent() {
 
             {/* Display Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-              <AnimatePresence mode="popLayout">
-                {filteredAndSortedProducts.map((product) => (
-                  <motion.div
-                    layout
-                    key={product._id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <ProductCard product={product} />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+              {products.length > 0 ? (
+                <AnimatePresence mode="popLayout">
+                  {filteredAndSortedProducts.map((product) => (
+                    <motion.div
+                      layout
+                      key={product._id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ProductCard product={product} />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              ) : (
+                <div className="col-span-full flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-green"></div>
+                </div>
+              )}
             </div>
 
             {/* Empty State */}

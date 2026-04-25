@@ -18,7 +18,6 @@ export default function Home() {
   const [featuredBanner, setFeaturedBanner] = useState<any>(null);
   const [deals, setDeals] = useState<any[]>([]);
   const [copiedCoupon, setCopiedCoupon] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState<any>(null);
   const [countdown, setCountdown] = useState({ hours: 12, minutes: 45, seconds: 30 });
 
@@ -60,8 +59,6 @@ export default function Home() {
         setDeals(activeDeals);
       } catch (error) {
         console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -133,17 +130,6 @@ export default function Home() {
     "FarmingBD", "NextGen", "Organic Life", "Pure Nature", "Health First", "Eco Farm", "Green Harvest"
   ];
 
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-brand-bg flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 border-4 border-brand-green border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-brand-green font-bold">Loading...</p>
-        </div>
-      </main>
-    );
-  }
-
   return (
     <main className="min-h-screen bg-brand-bg">
       <Header />
@@ -171,19 +157,25 @@ export default function Home() {
 
       {/* Product Ticker */}
       <div className="bg-white py-4 border-b border-emerald-50 overflow-hidden select-none">
-        <motion.div
-          animate={{ x: ["-50%", "0%"] }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="flex whitespace-nowrap gap-8 items-center"
-        >
-          {[...products, ...products].map((product: any, i: number) => (
-            <Link key={i} href={`/shop/${product._id}`} className="flex items-center gap-3 px-6 py-2 bg-[#f9faf5] rounded-full border border-emerald-100/50 cursor-pointer hover:border-brand-green transition-colors">
-              <ShoppingBag size={14} className="text-brand-green" />
-              <span className="text-xs font-bold text-slate-700">{product.name}</span>
-              <span className="text-brand-green font-black text-xs">৳{product.price}</span>
-            </Link>
-          ))}
-        </motion.div>
+        {products.length > 0 ? (
+          <motion.div
+            animate={{ x: ["-50%", "0%"] }}
+            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+            className="flex whitespace-nowrap gap-8 items-center"
+          >
+            {[...products, ...products].map((product: any, i: number) => (
+              <Link key={i} href={`/shop/${product._id}`} className="flex items-center gap-3 px-6 py-2 bg-[#f9faf5] rounded-full border border-emerald-100/50 cursor-pointer hover:border-brand-green transition-colors">
+                <ShoppingBag size={14} className="text-brand-green" />
+                <span className="text-xs font-bold text-slate-700">{product.name}</span>
+                <span className="text-brand-green font-black text-xs">৳{product.price}</span>
+              </Link>
+            ))}
+          </motion.div>
+        ) : (
+          <div className="flex items-center justify-center py-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-green"></div>
+          </div>
+        )}
       </div>
       
       <CategoryBar />
@@ -225,14 +217,20 @@ export default function Home() {
             </div>
 
             <div className="relative z-10 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-              {products.slice(0, 4).map((product: any) => (
-                <div key={product._id} className="relative group">
-                  <ProductCard product={product} />
-                  <div className="absolute top-4 right-4 bg-brand-red text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg z-10 animate-bounce">
-                    HOT
+              {products.length > 0 ? (
+                products.slice(0, 4).map((product: any) => (
+                  <div key={product._id} className="relative group">
+                    <ProductCard product={product} />
+                    <div className="absolute top-4 right-4 bg-brand-red text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg z-10 animate-bounce">
+                      HOT
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div className="col-span-full flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -309,41 +307,47 @@ export default function Home() {
             
             {/* Left Content (Products) */}
             <div className="lg:col-span-9 space-y-16">
-              {/* Top 4 Categories Sections */}
-              {categories.slice(0, 4).map((cat: any) => (
-                <div key={cat._id} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                  <div className="flex justify-between items-end border-b border-emerald-50 pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-brand-green shadow-sm shadow-emerald-100 border border-emerald-50">
-                        {cat.icon}
+              {categories.length > 0 ? (
+                /* Top 4 Categories Sections */
+                categories.slice(0, 4).map((cat: any) => (
+                  <div key={cat._id} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div className="flex justify-between items-end border-b border-emerald-50 pb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-brand-green shadow-sm shadow-emerald-100 border border-emerald-50">
+                          {cat.icon}
+                        </div>
+                        <div>
+                          <h3 className="text-xl md:text-2xl font-black text-brand-green-dark italic">{cat.name}</h3>
+                          <p className="text-slate-400 text-[10px] md:text-xs font-bold uppercase tracking-widest">{cat.name_en}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-xl md:text-2xl font-black text-brand-green-dark italic">{cat.name}</h3>
-                        <p className="text-slate-400 text-[10px] md:text-xs font-bold uppercase tracking-widest">{cat.name_en}</p>
-                      </div>
+                      <Link href={`/shop?category=${encodeURIComponent(cat.name_en)}`} className="text-brand-green font-black text-xs italic hover:underline flex items-center gap-1 group">
+                        সব দেখুন
+                        <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" /> 
+                      </Link>
                     </div>
-                    <Link href={`/shop?category=${encodeURIComponent(cat.name_en)}`} className="text-brand-green font-black text-xs italic hover:underline flex items-center gap-1 group">
-                      সব দেখুন
-                      <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" /> 
-                    </Link>
-                  </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-                    {products
-                      .filter((p: any) => p.category === cat.name_en)
-                      .slice(0, 3)
-                      .map((product: any) => (
-                        <ProductCard key={product._id} product={product} />
-                      ))
-                    }
-                    {products.filter((p: any) => p.category === cat.name_en).length === 0 && (
-                      <div className="col-span-full py-12 text-center bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
-                        <p className="text-slate-400 italic text-sm">এই ক্যাটাগরিতে বর্তমানে কোনো পণ্য নেই।</p>
-                      </div>
-                    )}
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+                      {products
+                        .filter((p: any) => p.category === cat.name_en)
+                        .slice(0, 3)
+                        .map((product: any) => (
+                          <ProductCard key={product._id} product={product} />
+                        ))
+                      }
+                      {products.filter((p: any) => p.category === cat.name_en).length === 0 && (
+                        <div className="col-span-full py-12 text-center bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
+                          <p className="text-slate-400 italic text-sm">এই ক্যাটাগরিতে বর্তমানে কোনো পণ্য নেই।</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-green"></div>
                 </div>
-              ))}
+              )}
             </div>
 
             {/* Right Sidebar Widget */}
