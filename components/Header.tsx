@@ -119,18 +119,25 @@ export default function Header() {
             )}
             <span className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold tracking-tight italic whitespace-nowrap">
               {settings?.siteName ? (
-                settings.siteName.split(/(Gen)/g).map((part: string, i: number) =>
-                  part === 'Gen' || part === 'জেন' ? (
-                    <span key={i} style={{ color: '#8B4513' }}>{part}</span>
-                  ) : (
-                    <span key={i} className="text-green-600">{part}</span>
-                  )
-                )
+                (() => {
+                  const parts = settings.siteName.split(/(Gen|জেন)/g);
+                  return parts.map((part: string, i: number) => {
+                    if (part === 'Gen' || part === 'জেন') {
+                      return <span key={i} style={{ color: '#8B4513' }}>{part}</span>;
+                    } else if (part.trim() === '' || part.startsWith(' ')) {
+                      return <span key={i}>{part}</span>;
+                    } else if (part.toLowerCase().includes('farming') || part.toLowerCase().includes('bangladesh')) {
+                      return <span key={i} className="text-black">{part}</span>;
+                    } else {
+                      return <span key={i} className="text-green-600">{part}</span>;
+                    }
+                  });
+                })()
               ) : (
                 <>
                   <span className="text-green-600">নেক্সট</span>
                   <span style={{ color: '#8B4513' }}>জেন</span>
-                  <span className="text-green-600"> FarmingBD</span>
+                  <span className="text-black"> FarmingBD</span>
                 </>
               )}
             </span>

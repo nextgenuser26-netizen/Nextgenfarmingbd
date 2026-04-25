@@ -39,18 +39,25 @@ export default function Footer() {
               )}
               <span className="text-2xl font-bold text-white tracking-tight italic">
                 {settings?.siteName ? (
-                  settings.siteName.split(/(Gen)/g).map((part: string, i: number) =>
-                    part === 'Gen' || part === 'জেন' ? (
-                      <span key={i} style={{ color: '#8B4513' }}>{part}</span>
-                    ) : (
-                      <span key={i} className="text-green-600">{part}</span>
-                    )
-                  )
+                  (() => {
+                    const parts = settings.siteName.split(/(Gen|জেন)/g);
+                    return parts.map((part: string, i: number) => {
+                      if (part === 'Gen' || part === 'জেন') {
+                        return <span key={i} style={{ color: '#8B4513' }}>{part}</span>;
+                      } else if (part.trim() === '' || part.startsWith(' ')) {
+                        return <span key={i}>{part}</span>;
+                      } else if (part.toLowerCase().includes('farming') || part.toLowerCase().includes('bangladesh')) {
+                        return <span key={i} className="text-black">{part}</span>;
+                      } else {
+                        return <span key={i} className="text-green-600">{part}</span>;
+                      }
+                    });
+                  })()
                 ) : (
                   <>
                     <span className="text-green-600">নেক্সট</span>
                     <span style={{ color: '#8B4513' }}>জেন</span>
-                    <span className="text-green-600"> FarmingBD</span>
+                    <span className="text-black"> FarmingBD</span>
                   </>
                 )}
               </span>
@@ -122,7 +129,7 @@ export default function Footer() {
       
       {/* Micro Bottom Footer */}
       <div className="w-full bg-[#f0ede4] py-3 px-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-500 border-t border-slate-200 gap-4">
-        <span>© ২০২৬ <span className="text-green-600">নেক্সট</span><span style={{ color: '#8B4513' }}>জেন</span><span className="text-green-600"> FarmingBD</span> - খাঁটি পণ্যের বিশ্বস্ত প্রতিষ্ঠান</span>
+        <span>© ২০২৬ <span className="text-green-600">নেক্সট</span><span style={{ color: '#8B4513' }}>জেন</span><span className="text-black"> FarmingBD</span> - খাঁটি পণ্যের বিশ্বস্ত প্রতিষ্ঠান</span>
         <div className="flex gap-6 uppercase tracking-wider font-bold">
           <Link href="/terms" className="hover:text-brand-green">শর্তাবলী</Link>
           <Link href="/privacy" className="hover:text-brand-green">গোপনীয়তা নীতি</Link>
