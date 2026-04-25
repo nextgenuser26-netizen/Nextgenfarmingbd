@@ -13,6 +13,8 @@ export default function EditBlog() {
   const [uploading, setUploading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
+  const [ogImageFile, setOgImageFile] = useState<File | null>(null);
+  const [ogImagePreview, setOgImagePreview] = useState<string>('');
   const [formData, setFormData] = useState({
     title: '',
     title_en: '',
@@ -26,6 +28,11 @@ export default function EditBlog() {
     tags: '',
     category: '',
     status: 'draft',
+    // SEO fields
+    metaTitle: '',
+    metaDescription: '',
+    metaKeywords: '',
+    ogImage: '',
   });
 
   const generateSlug = (title: string) => {
@@ -58,10 +65,18 @@ export default function EditBlog() {
           tags: blog.tags?.join(', ') || '',
           category: blog.category || '',
           status: blog.status || 'draft',
+          metaTitle: blog.metaTitle || '',
+          metaDescription: blog.metaDescription || '',
+          metaKeywords: blog.metaKeywords || '',
+          ogImage: blog.ogImage || '',
         });
         // Set image preview if featured image exists
         if (blog.featuredImage) {
           setImagePreview(blog.featuredImage);
+        }
+        // Set OG image preview if exists
+        if (blog.ogImage) {
+          setOgImagePreview(blog.ogImage);
         }
       }
     } catch (error) {
@@ -102,6 +117,29 @@ export default function EditBlog() {
     }
   };
 
+  const handleOgImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type)) {
+        alert('Only JPG, JPEG, PNG, and WebP images are allowed');
+        return;
+      }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB');
+        return;
+      }
+      setOgImageFile(file);
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setOgImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append('file', file);
@@ -126,8 +164,9 @@ export default function EditBlog() {
 
     try {
       let featuredImageUrl = formData.featuredImage;
+      let ogImageUrl = formData.ogImage;
       
-      // Upload image if a file is selected
+      // Upload featured image if a file is selected
       if (imageFile) {
         setUploading(true);
         try {
@@ -143,12 +182,29 @@ export default function EditBlog() {
         setUploading(false);
       }
 
+      // Upload OG image if a file is selected
+      if (ogImageFile) {
+        setUploading(true);
+        try {
+          ogImageUrl = await uploadImage(ogImageFile);
+          setFormData({ ...formData, ogImage: ogImageUrl });
+        } catch (error) {
+          console.error('Error uploading OG image:', error);
+          alert('Failed to upload OG image');
+          setUploading(false);
+          setSaving(false);
+          return;
+        }
+        setUploading(false);
+      }
+
       const res = await fetch(`/api/blogs/${params.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
           featuredImage: featuredImageUrl,
+          ogImage: ogImageUrl,
           tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
         }),
       });
@@ -351,6 +407,86 @@ export default function EditBlog() {
               onChange={(e) => setFormData({ ...formData, content_en: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             />
+          </div>
+
+          {/* SEO Section */}
+          <div className="border-t pt-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">SEO Settings</h2>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Meta Title
+                </label>
+                <input
+                  type="text"
+                  value={formData.metaTitle}
+                  onChange={(e) => setFormData({ ...formData, metaTitle: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="Leave empty to use blog title"
+                  maxLength={60}
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Recommended: 50-60 characters. Current: {formData.metaTitle.length}/60
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Meta Keywords
+                </label>
+                <input
+                  type="text"
+                  value={formData.metaKeywords}
+                  onChange={(e) => setFormData({ ...formData, metaKeywords: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="keyword1, keyword2, keyword3"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Comma-separated keywords for search engines
+                </p>
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Meta Description
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.metaDescription}
+                  onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="Leave empty to use excerpt"
+                  maxLength={160}
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Recommended: 150-160 characters. Current: {formData.metaDescription.length}/160
+                </p>
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  OG Image (Open Graph Image for Social Media)
+                </label>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  onChange={handleOgImageChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Recommended size: 1200x630px. Leave empty to use featured image.
+                </p>
+                {ogImagePreview && (
+                  <div className="mt-2">
+                    <img
+                      src={ogImagePreview}
+                      alt="OG Image Preview"
+                      className="w-64 h-32 object-cover rounded-lg border border-gray-200"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="flex justify-end space-x-4">

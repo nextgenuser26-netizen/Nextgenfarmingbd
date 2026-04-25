@@ -14,6 +14,11 @@ export interface IBlog extends Document {
   category?: string;
   status: 'draft' | 'published' | 'archived';
   publishedAt?: Date;
+  // SEO fields
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  ogImage?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -69,6 +74,22 @@ const BlogSchema = new Schema<IBlog>(
     },
     publishedAt: {
       type: Date
+    },
+    // SEO fields
+    metaTitle: {
+      type: String,
+      trim: true
+    },
+    metaDescription: {
+      type: String,
+      trim: true
+    },
+    metaKeywords: {
+      type: String,
+      trim: true
+    },
+    ogImage: {
+      type: String
     }
   },
   {
