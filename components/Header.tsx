@@ -95,7 +95,19 @@ export default function Header() {
               </div>
             )}
             <span className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-brand-green-dark tracking-tight italic whitespace-nowrap">
-              {settings?.siteName || 'নেক্সটজেন FarmingBD'}
+              {settings?.siteName ? (
+                settings.siteName.split(/(Gen)/g).map((part: string, i: number) => 
+                  part === 'Gen' ? (
+                    <span key={i} style={{ color: '#CDB290' }}>Gen</span>
+                  ) : (
+                    <span key={i}>{part}</span>
+                  )
+                )
+              ) : (
+                <>
+                  নেক্সট<span style={{ color: '#CDB290' }}>জেন</span> FarmingBD
+                </>
+              )}
             </span>
           </div>
         </Link>

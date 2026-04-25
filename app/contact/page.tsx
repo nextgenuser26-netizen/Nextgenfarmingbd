@@ -289,17 +289,7 @@ export default function ContactPage() {
                       <Youtube size={24} />
                     </motion.a>
                   )}
-                  {settings?.socialTwitter && (
-                    <motion.a
-                      href={settings.socialTwitter}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      className="w-12 h-12 md:w-14 md:h-14 bg-sky-500 text-white rounded-2xl flex items-center justify-center shadow-lg transition-all"
-                    >
-                      <Twitter size={24} />
-                    </motion.a>
-                  )}
+
                </div>
             </div>
 
