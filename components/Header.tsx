@@ -119,22 +119,18 @@ export default function Header() {
             )}
             <span className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold tracking-tight italic whitespace-nowrap">
               {settings?.siteName ? (
-                (() => {
-                  const parts = settings.siteName.split(' ');
-                  if (parts.length >= 2) {
-                    return (
-                      <>
-                        <span style={{ color: '#CDB290' }}>{parts[0]}</span>
-                        <span className="text-black"> {parts.slice(1).join(' ')}</span>
-                      </>
-                    );
-                  }
-                  return <span style={{ color: '#CDB290' }}>{settings.siteName}</span>;
-                })()
+                settings.siteName.split(/(Gen)/g).map((part: string, i: number) =>
+                  part === 'Gen' || part === 'জেন' ? (
+                    <span key={i} style={{ color: '#8B4513' }}>{part}</span>
+                  ) : (
+                    <span key={i} className="text-green-600">{part}</span>
+                  )
+                )
               ) : (
                 <>
-                  <span style={{ color: '#CDB290' }}>নেক্সটজেন</span>
-                  <span className="text-black"> FarmingBD</span>
+                  <span className="text-green-600">নেক্সট</span>
+                  <span style={{ color: '#8B4513' }}>জেন</span>
+                  <span className="text-green-600"> FarmingBD</span>
                 </>
               )}
             </span>

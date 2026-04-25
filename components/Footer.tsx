@@ -39,22 +39,18 @@ export default function Footer() {
               )}
               <span className="text-2xl font-bold text-white tracking-tight italic">
                 {settings?.siteName ? (
-                  (() => {
-                    const parts = settings.siteName.split(' ');
-                    if (parts.length >= 2) {
-                      return (
-                        <>
-                          <span style={{ color: '#CDB290' }}>{parts[0]}</span>
-                          <span className="text-black"> {parts.slice(1).join(' ')}</span>
-                        </>
-                      );
-                    }
-                    return <span style={{ color: '#CDB290' }}>{settings.siteName}</span>;
-                  })()
+                  settings.siteName.split(/(Gen)/g).map((part: string, i: number) =>
+                    part === 'Gen' || part === 'জেন' ? (
+                      <span key={i} style={{ color: '#8B4513' }}>{part}</span>
+                    ) : (
+                      <span key={i} className="text-green-600">{part}</span>
+                    )
+                  )
                 ) : (
                   <>
-                    <span style={{ color: '#CDB290' }}>নেক্সটজেন</span>
-                    <span className="text-black"> FarmingBD</span>
+                    <span className="text-green-600">নেক্সট</span>
+                    <span style={{ color: '#8B4513' }}>জেন</span>
+                    <span className="text-green-600"> FarmingBD</span>
                   </>
                 )}
               </span>
@@ -126,7 +122,7 @@ export default function Footer() {
       
       {/* Micro Bottom Footer */}
       <div className="w-full bg-[#f0ede4] py-3 px-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-500 border-t border-slate-200 gap-4">
-        <span>© ২০২৬ <span style={{ color: '#CDB290' }}>নেক্সটজেন</span> <span className="text-black">FarmingBD</span> - খাঁটি পণ্যের বিশ্বস্ত প্রতিষ্ঠান</span>
+        <span>© ২০২৬ <span className="text-green-600">নেক্সট</span><span style={{ color: '#8B4513' }}>জেন</span><span className="text-green-600"> FarmingBD</span> - খাঁটি পণ্যের বিশ্বস্ত প্রতিষ্ঠান</span>
         <div className="flex gap-6 uppercase tracking-wider font-bold">
           <Link href="/terms" className="hover:text-brand-green">শর্তাবলী</Link>
           <Link href="/privacy" className="hover:text-brand-green">গোপনীয়তা নীতি</Link>
