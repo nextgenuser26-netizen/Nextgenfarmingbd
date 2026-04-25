@@ -81,7 +81,10 @@ export default function AdminDeals() {
         <h1 className="text-2xl font-bold text-white">Deals</h1>
         <Link
           href="/admin/deals/new"
-          className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          className="flex items-center px-4 py-2 text-white rounded-lg transition-colors"
+          style={{ backgroundColor: '#6BCB8F' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5AB87E'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
         >
           <Plus className="w-5 h-5 mr-2" />
           Add Deal

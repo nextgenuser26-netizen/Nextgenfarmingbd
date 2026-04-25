@@ -458,7 +458,10 @@ export default function EditProduct() {
                   <button
                     type="button"
                     onClick={addVariant}
-                    className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
+                    className="px-3 py-1 text-white text-sm rounded transition-colors"
+                    style={{ backgroundColor: '#6BCB8F' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5AB87E'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
                   >
                     + Add Variant
                   </button>
@@ -760,7 +763,10 @@ export default function EditProduct() {
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+              className="flex items-center px-6 py-2 text-white rounded-lg transition-colors disabled:opacity-50"
+              style={{ backgroundColor: '#6BCB8F' }}
+              onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = '#5AB87E')}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
             >
               <Save className="w-5 h-5 mr-2" />
               {saving ? 'Saving...' : 'Save Changes'}

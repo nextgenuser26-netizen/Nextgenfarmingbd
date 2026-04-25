@@ -135,9 +135,10 @@ export default function AdminLayout({
                   href={item.href}
                   className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
                     isActive
-                      ? 'bg-green-600 text-white'
+                      ? 'text-white'
                       : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                   }`}
+                  style={isActive ? { backgroundColor: '#8B4513' } : {}}
                   onClick={() => setSidebarOpen(false)}
                 >
                   <div className="relative">
@@ -158,7 +159,10 @@ export default function AdminLayout({
           <div className="p-4 border-t border-gray-800">
             <button
               onClick={handleLogout}
-              className="flex items-center w-full px-4 py-3 text-gray-300 rounded-lg hover:bg-red-600 hover:text-white transition-colors"
+              className="flex items-center w-full px-4 py-3 text-gray-300 rounded-lg transition-colors"
+              style={{ backgroundColor: 'transparent' }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#8B4513'; e.currentTarget.style.color = 'white'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'rgb(209 213 219)'; }}
             >
               <LogOut className="w-5 h-5 mr-3" />
               Logout

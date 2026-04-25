@@ -132,19 +132,28 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <a
                 href="/admin/products/new"
-                className="flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                className="flex items-center justify-center px-4 py-3 text-white rounded-lg transition-colors"
+                style={{ backgroundColor: '#6BCB8F' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5AB87E'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
               >
                 Add New Product
               </a>
               <a
                 href="/admin/categories/new"
-                className="flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex items-center justify-center px-4 py-3 text-white rounded-lg transition-colors"
+                style={{ backgroundColor: '#6BCB8F' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5AB87E'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
               >
                 Add New Category
               </a>
               <a
                 href="/admin/blogs/new"
-                className="flex items-center justify-center px-4 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                className="flex items-center justify-center px-4 py-3 text-white rounded-lg transition-colors"
+                style={{ backgroundColor: '#6BCB8F' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5AB87E'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
               >
                 Write New Blog
               </a>

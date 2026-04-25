@@ -191,14 +191,20 @@ export default function AdminCustomers() {
         <div className="flex gap-3">
           <button
             onClick={exportToCSV}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+            style={{ backgroundColor: '#6BCB8F' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5AB87E'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
           >
             <Download className="w-5 h-5" />
             Export
           </button>
           <button
             onClick={handleCreateCustomer}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+            style={{ backgroundColor: '#6BCB8F' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5AB87E'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
           >
             <Plus className="w-5 h-5" />
             Add Customer
@@ -507,7 +513,10 @@ export default function AdminCustomers() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                  className="flex-1 text-white py-2 rounded-lg transition-colors disabled:opacity-50"
+                  style={{ backgroundColor: '#6BCB8F' }}
+                  onMouseEnter={(e) => !saving && (e.currentTarget.style.backgroundColor = '#5AB87E')}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
                 >
                   {saving ? 'Saving...' : (isEditMode ? 'Update' : 'Create')}
                 </button>

@@ -597,14 +597,20 @@ export default function AdminOrders() {
         <div className="flex gap-2">
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+            style={{ backgroundColor: '#6BCB8F' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5AB87E'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
           >
             <FileSpreadsheet size={16} />
             Export CSV
           </button>
           <button
             onClick={handleExportPDF}
-            className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+            style={{ backgroundColor: '#8B4513' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#7A3D11'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#8B4513'}
           >
             <FileText size={16} />
             Export PDF
@@ -644,7 +650,10 @@ export default function AdminOrders() {
           <button
             onClick={handleBatchDelete}
             disabled={batchDeleting}
-            className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ backgroundColor: '#8B4513' }}
+            onMouseEnter={(e) => !batchDeleting && (e.currentTarget.style.backgroundColor = '#7A3D11')}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#8B4513'}
           >
             <Trash2 size={16} />
             {batchDeleting ? 'Deleting...' : `Delete Selected (${selectedOrders.size})`}
@@ -763,9 +772,10 @@ export default function AdminOrders() {
                 onClick={() => handlePageChange(page)}
                 className={`px-4 py-2 border rounded-lg ${
                   currentPage === page
-                    ? 'bg-green-600 text-white border-green-600'
+                    ? 'text-white'
                     : 'border-gray-700 hover:bg-gray-700'
                 }`}
+                style={currentPage === page ? { backgroundColor: '#6BCB8F', borderColor: '#6BCB8F' } : {}}
               >
                 {page}
               </button>
@@ -790,7 +800,10 @@ export default function AdminOrders() {
               <div className="flex gap-2">
                 <button
                   onClick={handlePrintOrder}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+                  style={{ backgroundColor: '#6BCB8F' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5AB87E'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
                 >
                   <Printer className="w-5 h-5" />
                   Print

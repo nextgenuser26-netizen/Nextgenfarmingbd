@@ -611,7 +611,10 @@ export default function AdminSettings() {
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-6 py-3 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ backgroundColor: '#6BCB8F' }}
+            onMouseEnter={(e) => !saving && (e.currentTarget.style.backgroundColor = '#5AB87E')}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
           >
             <Save className="w-4 h-4" />
             {saving ? 'Saving...' : 'Save Settings'}

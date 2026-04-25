@@ -128,7 +128,10 @@ export default function TickerMessages() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-6 py-2 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ backgroundColor: '#6BCB8F' }}
+            onMouseEnter={(e) => !saving && (e.currentTarget.style.backgroundColor = '#5AB87E')}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6BCB8F'}
           >
             <Save size={20} />
             {saving ? 'Saving...' : 'Save Messages'}
