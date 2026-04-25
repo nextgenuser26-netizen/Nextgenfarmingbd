@@ -159,7 +159,6 @@ export default function Header() {
           <div className="relative w-full">
             <input 
               type="text" 
-              placeholder="পণ্য খুঁজুন..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsSearchFocused(true)}
@@ -250,9 +249,6 @@ export default function Header() {
             <span className="hidden lg:block text-[10px] mt-1 font-bold">ব্যাগ</span>
           </button>
           
-          <Link href="/customer-login?mode=register" className="hidden sm:inline-block bg-emerald-50 text-emerald-700 px-4 md:px-5 py-2 rounded-full text-xs md:text-sm font-semibold hover:bg-emerald-100 transition-colors shadow-sm whitespace-nowrap border border-emerald-200">
-            নিবন্ধন
-          </Link>
           <Link href="/customer-login" className="hidden sm:inline-block bg-brand-green-dark text-white px-4 md:px-6 py-2 rounded-full text-xs md:text-sm font-semibold hover:bg-brand-green-deep transition-colors shadow-sm whitespace-nowrap">
             লগইন
           </Link>
@@ -267,7 +263,6 @@ export default function Header() {
         <div className="relative">
           <input 
             type="text" 
-            placeholder="পণ্য সার্চ করুন..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
