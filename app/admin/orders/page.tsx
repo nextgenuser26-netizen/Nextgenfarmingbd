@@ -353,7 +353,26 @@ export default function AdminOrders() {
                 `).join('')}
               </tbody>
             </table>
-            <div class="total">Total: ৳${selectedOrder.totalAmount}</div>
+            <div style="margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
+              <div style="display: flex; justify-content: space-between; margin: 5px 0; color: #666;">
+                <span>Subtotal:</span>
+                <span>৳${selectedOrder.items?.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0)}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin: 5px 0; color: #666;">
+                <span>Delivery Charge:</span>
+                <span>৳${selectedOrder.deliveryCharge || 0}</span>
+              </div>
+              ${selectedOrder.deliveryAreaName ? `
+              <div style="display: flex; justify-content: space-between; margin: 5px 0; color: #999; font-size: 12px;">
+                <span>Delivery Area:</span>
+                <span>${selectedOrder.deliveryAreaName}</span>
+              </div>
+              ` : ''}
+              <div style="border-top: 1px solid #ddd; margin-top: 10px; padding-top: 10px; display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #333;">
+                <span>Total:</span>
+                <span>৳${selectedOrder.totalAmount}</span>
+              </div>
+            </div>
           </div>
 
           <div class="section">
@@ -881,8 +900,27 @@ export default function AdminOrders() {
                     </tbody>
                   </table>
                 </div>
-                <div className="mt-4 text-right">
-                  <p className="text-lg font-bold text-gray-900">Total: ৳{selectedOrder.totalAmount}</p>
+                <div className="mt-4 bg-gray-50 rounded-lg p-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-gray-600">
+                      <span>Subtotal</span>
+                      <span>৳{selectedOrder.items?.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0)}</span>
+                    </div>
+                    <div className="flex justify-between text-gray-600">
+                      <span>Delivery Charge</span>
+                      <span>৳{selectedOrder.deliveryCharge || 0}</span>
+                    </div>
+                    {selectedOrder.deliveryAreaName && (
+                      <div className="flex justify-between text-sm text-gray-500">
+                        <span>Delivery Area</span>
+                        <span>{selectedOrder.deliveryAreaName}</span>
+                      </div>
+                    )}
+                    <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
+                      <span>Total</span>
+                      <span>৳{selectedOrder.totalAmount}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
