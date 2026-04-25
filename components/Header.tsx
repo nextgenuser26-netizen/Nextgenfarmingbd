@@ -117,18 +117,24 @@ export default function Header() {
                 <div className="w-5 h-5 md:w-6 md:h-6 border-2 border-white rounded-sm transform rotate-45 group-hover:rotate-0 transition-transform duration-300"></div>
               </div>
             )}
-            <span className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-brand-green-dark tracking-tight italic whitespace-nowrap">
+            <span className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold tracking-tight italic whitespace-nowrap">
               {settings?.siteName ? (
-                settings.siteName.split(/(Gen)/g).map((part: string, i: number) => 
-                  part === 'Gen' ? (
-                    <span key={i} style={{ color: '#CDB290' }}>Gen</span>
-                  ) : (
-                    <span key={i}>{part}</span>
-                  )
-                )
+                (() => {
+                  const parts = settings.siteName.split(' ');
+                  if (parts.length >= 2) {
+                    return (
+                      <>
+                        <span style={{ color: '#CDB290' }}>{parts[0]}</span>
+                        <span className="text-black"> {parts.slice(1).join(' ')}</span>
+                      </>
+                    );
+                  }
+                  return <span style={{ color: '#CDB290' }}>{settings.siteName}</span>;
+                })()
               ) : (
                 <>
-                  নেক্সট<span style={{ color: '#CDB290' }}>জেন</span> FarmingBD
+                  <span style={{ color: '#CDB290' }}>নেক্সটজেন</span>
+                  <span className="text-black"> FarmingBD</span>
                 </>
               )}
             </span>

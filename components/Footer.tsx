@@ -39,16 +39,22 @@ export default function Footer() {
               )}
               <span className="text-2xl font-bold text-white tracking-tight italic">
                 {settings?.siteName ? (
-                  settings.siteName.split(/(Gen)/g).map((part: string, i: number) => 
-                    part === 'Gen' ? (
-                      <span key={i} style={{ color: '#CDB290' }}>Gen</span>
-                    ) : (
-                      <span key={i}>{part}</span>
-                    )
-                  )
+                  (() => {
+                    const parts = settings.siteName.split(' ');
+                    if (parts.length >= 2) {
+                      return (
+                        <>
+                          <span style={{ color: '#CDB290' }}>{parts[0]}</span>
+                          <span className="text-black"> {parts.slice(1).join(' ')}</span>
+                        </>
+                      );
+                    }
+                    return <span style={{ color: '#CDB290' }}>{settings.siteName}</span>;
+                  })()
                 ) : (
                   <>
-                    নেক্সট<span style={{ color: '#CDB290' }}>জেন</span> FarmingBD
+                    <span style={{ color: '#CDB290' }}>নেক্সটজেন</span>
+                    <span className="text-black"> FarmingBD</span>
                   </>
                 )}
               </span>
@@ -120,7 +126,7 @@ export default function Footer() {
       
       {/* Micro Bottom Footer */}
       <div className="w-full bg-[#f0ede4] py-3 px-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-500 border-t border-slate-200 gap-4">
-        <span>© ২০২৬ নেক্সট<span style={{ color: '#CDB290' }}>জেন</span> FarmingBD - খাঁটি পণ্যের বিশ্বস্ত প্রতিষ্ঠান</span>
+        <span>© ২০২৬ <span style={{ color: '#CDB290' }}>নেক্সটজেন</span> <span className="text-black">FarmingBD</span> - খাঁটি পণ্যের বিশ্বস্ত প্রতিষ্ঠান</span>
         <div className="flex gap-6 uppercase tracking-wider font-bold">
           <Link href="/terms" className="hover:text-brand-green">শর্তাবলী</Link>
           <Link href="/privacy" className="hover:text-brand-green">গোপনীয়তা নীতি</Link>

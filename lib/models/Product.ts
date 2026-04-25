@@ -25,6 +25,9 @@ export interface IProduct extends Document {
     inStock: boolean;
   }[];
   hasVariants: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -134,6 +137,15 @@ const ProductSchema: Schema = new Schema({
   hasVariants: {
     type: Boolean,
     default: false
+  },
+  seoTitle: {
+    type: String
+  },
+  seoDescription: {
+    type: String
+  },
+  seoKeywords: {
+    type: String
   }
 }, {
   timestamps: true,

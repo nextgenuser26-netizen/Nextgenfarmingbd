@@ -33,6 +33,9 @@ export default function NewProduct() {
       oldPrice: string;
       inStock: boolean;
     }>,
+    seoTitle: '',
+    seoDescription: '',
+    seoKeywords: '',
   });
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -634,6 +637,62 @@ export default function NewProduct() {
               placeholder="Enter detailed product information that will appear in the 'বিস্তারিত' section on the single product page..."
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             />
+          </div>
+
+          {/* SEO Section */}
+          <div className="border-t pt-6 bg-blue-50 rounded-lg p-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">SEO Settings</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  SEO Title
+                </label>
+                <input
+                  type="text"
+                  value={formData.seoTitle}
+                  onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
+                  placeholder="Enter SEO title (recommended: 50-60 characters)"
+                  maxLength={60}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  {formData.seoTitle.length}/60 characters
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  SEO Description
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.seoDescription}
+                  onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
+                  placeholder="Enter SEO description (recommended: 150-160 characters)"
+                  maxLength={160}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  {formData.seoDescription.length}/160 characters
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  SEO Keywords
+                </label>
+                <input
+                  type="text"
+                  value={formData.seoKeywords}
+                  onChange={(e) => setFormData({ ...formData, seoKeywords: e.target.value })}
+                  placeholder="Enter keywords separated by commas (e.g., organic honey, pure ghee, natural food)"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Separate multiple keywords with commas
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="flex items-center">
