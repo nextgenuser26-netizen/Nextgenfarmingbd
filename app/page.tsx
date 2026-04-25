@@ -44,6 +44,7 @@ export default function Home() {
         setSettings(settingsData.settings);
         console.log('Settings loaded:', settingsData.settings);
         console.log('Banner image:', settingsData.settings?.bannerImage);
+        console.log('Ticker messages:', settingsData.settings?.tickerMessages);
         
         const banners = bannersData.banners || [];
         if (banners.length > 0) {
@@ -116,13 +117,17 @@ export default function Home() {
       window.location.href = '/checkout';
     }, 500);
   };
-  const offerMessages = [
-    "প্রথম অর্ডারে ১০% ডিসকাউন্ট! কোড: NEXTGEN10",
-    "সারা বাংলাদেশে ফ্রি ডেলিভারি (মিনিমাম ১৫০০/- অর্ডার)",
-    "৫০% পর্যন্ত ছাড় সীমিত সময়ের জন্য",
-    "১০০% খাঁটি পণ্যের নিশ্চয়তা বা টাকা ফেরত",
-    "refer your friends and get rewards"
-  ];
+
+  // Use ticker messages from settings or fallback to default
+  const offerMessages = settings?.tickerMessages?.length > 0 
+    ? settings.tickerMessages 
+    : [
+        "প্রথম অর্ডারে ১০% ডিসকাউন্ট! কোড: NEXTGEN10",
+        "সারা বাংলাদেশে ফ্রি ডেলিভারি (মিনিমাম ১৫০০/- অর্ডার)",
+        "৫০% পর্যন্ত ছাড় সীমিত সময়ের জন্য",
+        "১০০% খাঁটি পণ্যের নিশ্চয়তা বা টাকা ফেরত",
+        "refer your friends and get rewards"
+      ];
 
   const brandNames = [
     "FarmingBD", "NextGen", "Organic Life", "Pure Nature", "Health First", "Eco Farm", "Green Harvest"

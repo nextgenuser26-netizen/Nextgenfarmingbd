@@ -26,6 +26,7 @@ export interface ISettings extends Document {
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string;
+  tickerMessages?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -124,6 +125,16 @@ const SettingsSchema = new Schema<ISettings>(
     },
     seoKeywords: {
       type: String
+    },
+    tickerMessages: {
+      type: [String],
+      default: [
+        'প্রথম অর্ডারে ১০% ডিসকাউন্ট! কোড: NEXTGEN10',
+        'সারা বাংলাদেশে ফ্রি ডেলিভারি (মিনিমাম ১৫০০/- অর্ডার)',
+        '৫০% পর্যন্ত ছাড় সীমিত সময়ের জন্য',
+        '১০০% খাঁটি পণ্যের নিশ্চয়তা বা টাকা ফেরত',
+        'refer your friends and get rewards'
+      ]
     }
   },
   {

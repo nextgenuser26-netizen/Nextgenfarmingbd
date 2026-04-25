@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
     
     console.log('Fetched settings:', settings);
     console.log('Banner image from DB:', settings.bannerImage);
+    console.log('Ticker messages from DB:', settings.tickerMessages);
     
     return NextResponse.json({ settings });
   } catch (error) {
@@ -52,6 +53,7 @@ export async function PUT(request: NextRequest) {
     
     console.log('Updating settings with data:', settingsData);
     console.log('Banner image in request:', settingsData.bannerImage);
+    console.log('Ticker messages in request:', settingsData.tickerMessages);
     
     // Use findOneAndUpdate with upsert to ensure bannerImage is saved
     const settings = await Settings.findOneAndUpdate(
@@ -82,7 +84,8 @@ export async function PUT(request: NextRequest) {
           maintenanceMessage: settingsData.maintenanceMessage,
           seoTitle: settingsData.seoTitle,
           seoDescription: settingsData.seoDescription,
-          seoKeywords: settingsData.seoKeywords
+          seoKeywords: settingsData.seoKeywords,
+          tickerMessages: settingsData.tickerMessages
         }
       },
       {
@@ -94,6 +97,7 @@ export async function PUT(request: NextRequest) {
     
     console.log('Settings saved successfully:', settings);
     console.log('Banner image after save:', settings.bannerImage);
+    console.log('Ticker messages after save:', settings.tickerMessages);
     
     return NextResponse.json({ settings });
   } catch (error) {
