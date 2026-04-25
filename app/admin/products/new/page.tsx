@@ -291,14 +291,14 @@ export default function NewProduct() {
       </div>
 
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Add New Product</h1>
+        <h1 className="text-2xl font-bold text-white">Add New Product</h1>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-gray-800 rounded-lg shadow p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Product Name (Bangla) *
               </label>
               <input
@@ -306,24 +306,24 @@ export default function NewProduct() {
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Product Name (English)
               </label>
               <input
                 type="text"
                 value={formData.name_en}
                 onChange={(e) => setFormData({ ...formData, name_en: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Price (৳) {!formData.hasVariants && '*'}
               </label>
               <input
@@ -332,7 +332,7 @@ export default function NewProduct() {
                 step="0.01"
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
               />
               {formData.hasVariants && (
                 <p className="text-xs text-gray-500 mt-1">This price is ignored when variants are enabled</p>
@@ -340,7 +340,7 @@ export default function NewProduct() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Old Price (৳)
               </label>
               <input
@@ -348,7 +348,7 @@ export default function NewProduct() {
                 step="0.01"
                 value={formData.oldPrice}
                 onChange={(e) => setFormData({ ...formData, oldPrice: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
               />
               {formData.hasVariants && (
                 <p className="text-xs text-gray-500 mt-1">This price is ignored when variants are enabled</p>
@@ -356,14 +356,14 @@ export default function NewProduct() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Category *
               </label>
               <select
                 required
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value, subcategory: '' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
                 disabled={categoriesLoading}
               >
                 <option value="">Select a category</option>
@@ -376,13 +376,13 @@ export default function NewProduct() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Subcategory
               </label>
               <select
                 value={formData.subcategory}
                 onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
                 disabled={!selectedCategory || !selectedCategory.subcategories || selectedCategory.subcategories.length === 0}
               >
                 <option value="">Select a subcategory (optional)</option>
@@ -402,9 +402,9 @@ export default function NewProduct() {
                 id="hasVariants"
                 checked={formData.hasVariants}
                 onChange={(e) => setFormData({ ...formData, hasVariants: e.target.checked })}
-                className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                className="w-4 h-4 text-green-600 border-gray-700 rounded focus:ring-green-500"
               />
-              <label htmlFor="hasVariants" className="ml-2 text-sm font-medium text-gray-700">
+              <label htmlFor="hasVariants" className="ml-2 text-sm font-medium text-dark">
                 পরিমাণ নির্বাচন করুন (Has Variants)
               </label>
             </div>
@@ -412,7 +412,7 @@ export default function NewProduct() {
             {formData.hasVariants && (
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-medium text-gray-700">Product Variants</h3>
+                  <h3 className="text-sm font-medium text-dark">Product Variants</h3>
                   <button
                     type="button"
                     onClick={addVariant}
@@ -423,9 +423,9 @@ export default function NewProduct() {
                 </div>
 
                 {formData.variants.map((variant, index) => (
-                  <div key={index} className="border rounded-lg p-4 space-y-3 bg-white">
+                  <div key={index} className="border rounded-lg p-4 space-y-3 bg-gray-800">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-gray-600">Variant {index + 1}</span>
+                      <span className="text-sm font-medium text-white">Variant {index + 1}</span>
                       {formData.variants.length > 1 && (
                         <button
                           type="button"
@@ -439,33 +439,33 @@ export default function NewProduct() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label className="block text-xs font-medium text-gray-300 mb-1">
                           Variant Name (Bangla) *
                         </label>
                         <input
                           type="text"
                           value={variant.name}
                           onChange={(e) => updateVariant(index, 'name', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800 placeholder-gray-400"
                           placeholder="e.g., ১ কেজি"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label className="block text-xs font-medium text-gray-300 mb-1">
                           Variant Name (English)
                         </label>
                         <input
                           type="text"
                           value={variant.name_en}
                           onChange={(e) => updateVariant(index, 'name_en', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800 placeholder-gray-400"
                           placeholder="e.g., 1kg"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label className="block text-xs font-medium text-gray-300 mb-1">
                           Price (৳) *
                         </label>
                         <input
@@ -473,12 +473,12 @@ export default function NewProduct() {
                           step="0.01"
                           value={variant.price}
                           onChange={(e) => updateVariant(index, 'price', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label className="block text-xs font-medium text-gray-300 mb-1">
                           Old Price (৳)
                         </label>
                         <input
@@ -486,7 +486,7 @@ export default function NewProduct() {
                           step="0.01"
                           value={variant.oldPrice}
                           onChange={(e) => updateVariant(index, 'oldPrice', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent"
                         />
                       </div>
                     </div>
@@ -497,9 +497,9 @@ export default function NewProduct() {
                         id={`variant-inStock-${index}`}
                         checked={variant.inStock}
                         onChange={(e) => updateVariant(index, 'inStock', e.target.checked)}
-                        className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                        className="w-4 h-4 text-green-600 border-gray-700 rounded focus:ring-green-500"
                       />
-                      <label htmlFor={`variant-inStock-${index}`} className="ml-2 text-sm text-gray-700">
+                      <label htmlFor={`variant-inStock-${index}`} className="ml-2 text-sm text-gray-300">
                         In Stock
                       </label>
                     </div>
@@ -511,7 +511,7 @@ export default function NewProduct() {
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Product Image *
               </label>
               <div className="space-y-3">
@@ -519,7 +519,7 @@ export default function NewProduct() {
                   type="file"
                   accept="image/jpeg,image/jpg,image/png,image/webp"
                   onChange={(e) => handleFileChange(e, 'main')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                  className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
                 />
                 {uploading && (
                   <p className="text-sm text-gray-500">Uploading images...</p>
@@ -556,7 +556,7 @@ export default function NewProduct() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Gallery Images (up to 2 for single page)
               </label>
               <div className="space-y-3">
@@ -566,7 +566,7 @@ export default function NewProduct() {
                   disabled={galleryImagePreviews.length >= 2 || uploading}
                   ref={galleryFileInputRef}
                   onChange={(e) => handleFileChange(e, 'gallery')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-green-50 file:text-green-700 hover:file:bg-green-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-green-50 file:text-green-700 hover:file:bg-green-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 {uploading && (
                   <p className="text-sm text-gray-500">Uploading images...</p>
@@ -603,31 +603,31 @@ export default function NewProduct() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Description (Bangla)
             </label>
             <textarea
               rows={4}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Description (English)
             </label>
             <textarea
               rows={4}
               value={formData.description_en}
               onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               বিস্তারিত (Details for Single Product Page)
             </label>
             <textarea
@@ -635,7 +635,7 @@ export default function NewProduct() {
               value={formData.details}
               onChange={(e) => setFormData({ ...formData, details: e.target.value })}
               placeholder="Enter detailed product information that will appear in the 'বিস্তারিত' section on the single product page..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
             />
           </div>
 
@@ -644,7 +644,7 @@ export default function NewProduct() {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">SEO Settings</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   SEO Title
                 </label>
                 <input
@@ -653,7 +653,7 @@ export default function NewProduct() {
                   onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
                   placeholder="Enter SEO title (recommended: 50-60 characters)"
                   maxLength={60}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   {formData.seoTitle.length}/60 characters
@@ -661,7 +661,7 @@ export default function NewProduct() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   SEO Description
                 </label>
                 <textarea
@@ -670,7 +670,7 @@ export default function NewProduct() {
                   onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
                   placeholder="Enter SEO description (recommended: 150-160 characters)"
                   maxLength={160}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   {formData.seoDescription.length}/160 characters
@@ -678,7 +678,7 @@ export default function NewProduct() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   SEO Keywords
                 </label>
                 <input
@@ -686,7 +686,7 @@ export default function NewProduct() {
                   value={formData.seoKeywords}
                   onChange={(e) => setFormData({ ...formData, seoKeywords: e.target.value })}
                   placeholder="Enter keywords separated by commas (e.g., organic honey, pure ghee, natural food)"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   Separate multiple keywords with commas
@@ -701,9 +701,9 @@ export default function NewProduct() {
               id="inStock"
               checked={formData.inStock}
               onChange={(e) => setFormData({ ...formData, inStock: e.target.checked })}
-              className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+              className="w-4 h-4 text-green-600 border-gray-700 rounded focus:ring-green-500"
             />
-            <label htmlFor="inStock" className="ml-2 text-sm text-gray-700">
+            <label htmlFor="inStock" className="ml-2 text-sm text-gray-300">
               In Stock
             </label>
           </div>
@@ -711,7 +711,7 @@ export default function NewProduct() {
           <div className="flex justify-end space-x-4">
             <Link
               href="/admin/products"
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
               Cancel
             </Link>

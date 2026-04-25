@@ -82,18 +82,18 @@ export default function AdminDashboard() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-2 text-gray-600">Welcome to your admin dashboard</p>
+        <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+        <p className="mt-2 text-gray-400">Welcome to your admin dashboard</p>
       </div>
 
       {loading && (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-8 h-8 animate-spin text-green-600" />
+          <Loader2 className="w-8 h-8 animate-spin text-green-500" />
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        <div className="bg-red-900 border border-red-700 text-red-100 px-4 py-3 rounded-lg mb-6">
           {error}
         </div>
       )}
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
               <a
                 key={stat.name}
                 href={stat.href}
-                className="relative overflow-hidden bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+                className="relative overflow-hidden bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow border border-gray-700"
               >
                 <div className="p-6">
                   <div className="flex items-center">
@@ -114,8 +114,8 @@ export default function AdminDashboard() {
                       <stat.icon className="w-6 h-6 text-white" />
                     </div>
                     <div className="ml-5">
-                      <p className="text-sm font-medium text-gray-500">{stat.name}</p>
-                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-sm font-medium text-gray-400">{stat.name}</p>
+                      <p className="text-2xl font-bold text-white">{stat.value}</p>
                     </div>
                   </div>
                 </div>
@@ -124,8 +124,8 @@ export default function AdminDashboard() {
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <div className="bg-gray-800 rounded-lg shadow p-6 border border-gray-700">
+            <h2 className="text-lg font-semibold text-white mb-4 flex items-center">
               <TrendingUp className="w-5 h-5 mr-2" />
               Quick Actions
             </h2>

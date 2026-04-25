@@ -28,9 +28,12 @@ export async function GET(request: NextRequest) {
     let query: any = { role: 'user' };
     
     if (search) {
+      // Normalize search term for phone matching
+      const normalizedSearch = normalizePhone(search);
+      
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
-        { phone: { $regex: search, $options: 'i' } },
+        { phone: { $regex: normalizedSearch, $options: 'i' } },
         { email: { $regex: search, $options: 'i' } },
       ];
     }

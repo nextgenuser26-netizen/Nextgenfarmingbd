@@ -212,60 +212,66 @@ export default function AdminOrders() {
         <head>
           <title>Order Details - ${selectedOrder.orderNumber || selectedOrder._id}</title>
           <style>
+            @page {
+              size: A4;
+              margin: 10mm;
+            }
             body {
               font-family: Arial, sans-serif;
-              padding: 20px;
-              max-width: 800px;
+              padding: 10px;
+              max-width: 100%;
               margin: 0 auto;
+              font-size: 11px;
             }
             .company-header {
               text-align: center;
-              margin-bottom: 20px;
-              padding-bottom: 20px;
+              margin-bottom: 10px;
+              padding-bottom: 10px;
               border-bottom: 2px solid #333;
             }
             .company-logo {
-              max-width: 150px;
-              max-height: 80px;
-              margin-bottom: 10px;
+              max-width: 100px;
+              max-height: 50px;
+              margin-bottom: 5px;
             }
             .company-name {
-              font-size: 24px;
+              font-size: 18px;
               font-weight: bold;
               color: #333;
-              margin: 10px 0;
+              margin: 5px 0;
             }
             .company-address {
               color: #666;
-              font-size: 14px;
-              margin: 5px 0;
+              font-size: 10px;
+              margin: 3px 0;
             }
             .company-contact {
               color: #666;
-              font-size: 12px;
-              margin: 5px 0;
+              font-size: 10px;
+              margin: 2px 0;
             }
             .header {
-              margin-bottom: 20px;
+              margin-bottom: 10px;
             }
             .header h1 {
               margin: 0;
               color: #333;
+              font-size: 16px;
             }
             .section {
-              margin: 20px 0;
-              padding: 15px;
+              margin: 8px 0;
+              padding: 8px;
               border: 1px solid #ddd;
-              border-radius: 5px;
+              border-radius: 3px;
             }
             .section h2 {
               color: #555;
               margin-top: 0;
-              margin-bottom: 10px;
-              font-size: 16px;
+              margin-bottom: 5px;
+              font-size: 12px;
             }
             .info-row {
-              margin: 8px 0;
+              margin: 3px 0;
             }
             .label {
               font-weight: bold;
@@ -274,27 +280,29 @@ export default function AdminOrders() {
             table {
               width: 100%;
               border-collapse: collapse;
-              margin-top: 10px;
+              margin-top: 5px;
+              font-size: 10px;
             }
             th, td {
               border: 1px solid #ddd;
-              padding: 10px;
+              padding: 5px;
               text-align: left;
             }
             th {
               background-color: #f5f5f5;
+              font-size: 10px;
             }
             .total {
               text-align: right;
-              font-size: 18px;
+              font-size: 14px;
               font-weight: bold;
-              margin-top: 15px;
+              margin-top: 8px;
             }
             .status {
-              padding: 5px 10px;
+              padding: 3px 6px;
               border-radius: 3px;
               display: inline-block;
-              font-size: 12px;
+              font-size: 10px;
               font-weight: bold;
             }
             .status-pending { background-color: #fff3cd; color: #856404; }
@@ -303,6 +311,9 @@ export default function AdminOrders() {
             .status-shipped { background-color: #d4edda; color: #155724; }
             .status-delivered { background-color: #d4edda; color: #155724; }
             .status-cancelled { background-color: #f8d7da; color: #721c24; }
+            @media print {
+              body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+            }
           </style>
         </head>
         <body>
@@ -582,7 +593,7 @@ export default function AdminOrders() {
   return (
     <div>
       <div className="mb-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
+        <h1 className="text-2xl font-bold text-white">Orders</h1>
         <div className="flex gap-2">
           <button
             onClick={handleExportCSV}
@@ -610,7 +621,7 @@ export default function AdminOrders() {
             placeholder="Search orders..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
           />
         </div>
         <div className="relative">
@@ -618,7 +629,7 @@ export default function AdminOrders() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="pl-10 pr-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
           >
             <option value="">All Status</option>
             <option value="pending">Pending</option>
@@ -642,12 +653,12 @@ export default function AdminOrders() {
       </div>
 
       {/* Orders Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-gray-800 rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-700">
+            <thead className="bg-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-10">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider w-10">
                   <input
                     type="checkbox"
                     checked={selectedOrders.size === filteredOrders.length && filteredOrders.length > 0}
@@ -655,32 +666,32 @@ export default function AdminOrders() {
                     className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
                   />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Order ID
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Customer
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Items
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Total
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Date
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-gray-800 divide-y divide-gray-700">
               {filteredOrders.map((order: any) => (
-                <tr key={order._id} className="hover:bg-gray-50">
+                <tr key={order._id} className="hover:bg-gray-700">
                   <td className="px-6 py-4 whitespace-nowrap w-10">
                     <input
                       type="checkbox"
@@ -690,17 +701,17 @@ export default function AdminOrders() {
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{order.orderNumber || order._id}</div>
+                    <div className="text-sm font-medium text-white">{order.orderNumber || order._id}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{order.customerName || 'N/A'}</div>
-                    <div className="text-sm text-gray-500">{order.customerPhone || 'N/A'}</div>
+                    <div className="text-sm text-white">{order.customerName || 'N/A'}</div>
+                    <div className="text-sm text-gray-400">{order.customerPhone || 'N/A'}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{order.items?.length || 0} items</div>
+                    <div className="text-sm text-white">{order.items?.length || 0} items</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">৳{order.totalAmount}</div>
+                    <div className="text-sm font-medium text-white">৳{order.totalAmount}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.status)}`}>
@@ -708,7 +719,7 @@ export default function AdminOrders() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-white">
                       {new Date(order.createdAt).toLocaleDateString()}
                     </div>
                   </td>
@@ -726,7 +737,7 @@ export default function AdminOrders() {
           </table>
         </div>
         {filteredOrders.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-gray-400">
             No orders found
           </div>
         )}
@@ -735,14 +746,14 @@ export default function AdminOrders() {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="mt-6 flex items-center justify-between">
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-300">
             Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalOrders)} of {totalOrders} orders
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 border border-gray-700 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Previous
             </button>
@@ -753,7 +764,7 @@ export default function AdminOrders() {
                 className={`px-4 py-2 border rounded-lg ${
                   currentPage === page
                     ? 'bg-green-600 text-white border-green-600'
-                    : 'border-gray-300 hover:bg-gray-50'
+                    : 'border-gray-700 hover:bg-gray-700'
                 }`}
               >
                 {page}
@@ -762,7 +773,7 @@ export default function AdminOrders() {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 border border-gray-700 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next
             </button>
@@ -773,9 +784,9 @@ export default function AdminOrders() {
       {/* Order Details Modal */}
       {isModalOpen && selectedOrder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-900">Order Details</h2>
+          <div className="bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-gray-800 border-b px-6 py-4 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-white">Order Details</h2>
               <div className="flex gap-2">
                 <button
                   onClick={handlePrintOrder}
@@ -789,7 +800,7 @@ export default function AdminOrders() {
                     setIsModalOpen(false);
                     setSelectedOrder(null);
                   }}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 hover:text-gray-300"
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -800,32 +811,32 @@ export default function AdminOrders() {
               {/* Order Info */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-500">Order Number</p>
+                  <p className="text-sm text-gray-400">Order Number</p>
                   <p className="font-semibold">{selectedOrder.orderNumber || selectedOrder._id}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Order Date</p>
+                  <p className="text-sm text-gray-400">Order Date</p>
                   <p className="font-semibold">{new Date(selectedOrder.createdAt).toLocaleString()}</p>
                 </div>
               </div>
 
               {/* Customer Info */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <div className="bg-gray-700 rounded-lg p-4">
+                <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
                   <Package className="w-5 h-5" /> Customer Information
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex items-center gap-2">
                     <Mail className="w-4 h-4 text-gray-400" />
                     <div>
-                      <p className="text-sm text-gray-500">Name</p>
+                      <p className="text-sm text-gray-400">Name</p>
                       <p className="font-medium">{selectedOrder.customerName}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Phone className="w-4 h-4 text-gray-400" />
                     <div>
-                      <p className="text-sm text-gray-500">Phone</p>
+                      <p className="text-sm text-gray-400">Phone</p>
                       <p className="font-medium">{selectedOrder.customerPhone}</p>
                     </div>
                   </div>
@@ -833,7 +844,7 @@ export default function AdminOrders() {
                     <div className="flex items-center gap-2">
                       <Mail className="w-4 h-4 text-gray-400" />
                       <div>
-                        <p className="text-sm text-gray-500">Email</p>
+                        <p className="text-sm text-gray-400">Email</p>
                         <p className="font-medium">{selectedOrder.customerEmail}</p>
                       </div>
                     </div>
@@ -842,11 +853,11 @@ export default function AdminOrders() {
               </div>
 
               {/* Shipping Address */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <div className="bg-gray-700 rounded-lg p-4">
+                <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
                   <MapPin className="w-5 h-5" /> Shipping Address
                 </h3>
-                <p className="text-gray-700">
+                <p className="text-gray-300">
                   {selectedOrder.shippingAddress?.street}, {selectedOrder.shippingAddress?.city},{' '}
                   {selectedOrder.shippingAddress?.state}, {selectedOrder.shippingAddress?.zipCode},{' '}
                   {selectedOrder.shippingAddress?.country}
@@ -855,18 +866,18 @@ export default function AdminOrders() {
 
               {/* Order Items */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Order Items</h3>
+                <h3 className="font-semibold text-white mb-3">Order Items</h3>
                 <div className="border rounded-lg overflow-hidden">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-gray-700">
+                    <thead className="bg-gray-700">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Product</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Price</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Quantity</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Total</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-gray-800 divide-y divide-gray-700">
                       {selectedOrder.items?.map((item: any, index: number) => (
                         <tr key={index}>
                           <td className="px-4 py-3">
@@ -884,39 +895,39 @@ export default function AdminOrders() {
                                 </div>
                               )}
                               <div>
-                                <p className="font-medium text-gray-900">{item.name}</p>
+                                <p className="font-medium text-white">{item.name}</p>
                                 {item.variant && (
                                   <p className="text-xs font-semibold text-green-600 uppercase tracking-wider">{item.variant}</p>
                                 )}
-                                <p className="text-sm text-gray-500">{item.name_en}</p>
+                                <p className="text-sm text-gray-400">{item.name_en}</p>
                               </div>
                             </div>
                           </td>
-                          <td className="px-4 py-3 text-gray-900">৳{item.price}</td>
-                          <td className="px-4 py-3 text-gray-900">{item.quantity}</td>
-                          <td className="px-4 py-3 font-medium text-gray-900">৳{item.price * item.quantity}</td>
+                          <td className="px-4 py-3 text-white">৳{item.price}</td>
+                          <td className="px-4 py-3 text-white">{item.quantity}</td>
+                          <td className="px-4 py-3 font-medium text-white">৳{item.price * item.quantity}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <div className="mt-4 bg-gray-50 rounded-lg p-4">
+                <div className="mt-4 bg-gray-700 rounded-lg p-4">
                   <div className="space-y-2">
-                    <div className="flex justify-between text-gray-600">
+                    <div className="flex justify-between text-gray-300">
                       <span>Subtotal</span>
                       <span>৳{selectedOrder.items?.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0)}</span>
                     </div>
-                    <div className="flex justify-between text-gray-600">
+                    <div className="flex justify-between text-gray-300">
                       <span>Delivery Charge</span>
                       <span>৳{selectedOrder.deliveryCharge || 0}</span>
                     </div>
                     {selectedOrder.deliveryAreaName && (
-                      <div className="flex justify-between text-sm text-gray-500">
+                      <div className="flex justify-between text-sm text-gray-400">
                         <span>Delivery Area</span>
                         <span>{selectedOrder.deliveryAreaName}</span>
                       </div>
                     )}
-                    <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
+                    <div className="border-t pt-2 flex justify-between text-lg font-bold text-white">
                       <span>Total</span>
                       <span>৳{selectedOrder.totalAmount}</span>
                     </div>
@@ -925,17 +936,17 @@ export default function AdminOrders() {
               </div>
 
               {/* Payment Info */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <div className="bg-gray-700 rounded-lg p-4">
+                <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
                   <CreditCard className="w-5 h-5" /> Payment Information
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-500">Payment Method</p>
+                    <p className="text-sm text-gray-400">Payment Method</p>
                     <p className="font-medium">{selectedOrder.paymentMethod}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Payment Status</p>
+                    <p className="text-sm text-gray-400">Payment Status</p>
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPaymentStatusColor(selectedOrder.paymentStatus)}`}>
                       {selectedOrder.paymentStatus}
                     </span>
@@ -945,15 +956,15 @@ export default function AdminOrders() {
 
               {/* Notes */}
               {selectedOrder.notes && (
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-900 mb-2">Order Notes</h3>
-                  <p className="text-gray-700">{selectedOrder.notes}</p>
+                <div className="bg-gray-700 rounded-lg p-4">
+                  <h3 className="font-semibold text-white mb-2">Order Notes</h3>
+                  <p className="text-gray-300">{selectedOrder.notes}</p>
                 </div>
               )}
 
               {/* Status Update */}
               <div className="border-t pt-4">
-                <h3 className="font-semibold text-gray-900 mb-3">Update Order Status</h3>
+                <h3 className="font-semibold text-white mb-3">Update Order Status</h3>
                 <div className="flex gap-2 flex-wrap">
                   {['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map((status) => (
                     <button

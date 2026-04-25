@@ -82,11 +82,11 @@ export default function TickerMessages() {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
           <Globe className="w-6 h-6" />
           Ticker Messages
         </h1>
-        <p className="text-gray-600 mt-1">
+        <p className="text-gray-300 mt-1">
           Manage the scrolling offer messages displayed at the top of the home page.
         </p>
       </div>

@@ -118,14 +118,14 @@ export default function NewCategory() {
       </div>
 
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Add New Category</h1>
+        <h1 className="text-2xl font-bold text-white">Add New Category</h1>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-gray-800 rounded-lg shadow p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-white mb-2">
                 Category Name (Bangla) *
               </label>
               <input
@@ -133,12 +133,12 @@ export default function NewCategory() {
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-white mb-2">
                 Category Name (English) *
               </label>
               <input
@@ -146,12 +146,12 @@ export default function NewCategory() {
                 required
                 value={formData.name_en}
                 onChange={(e) => setFormData({ ...formData, name_en: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-white mb-2">
                 Icon (Emoji) *
               </label>
               <input
@@ -159,14 +159,14 @@ export default function NewCategory() {
                 required
                 value={formData.icon}
                 onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
                 placeholder="e.g., 🥕"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white mb-2">
               Subcategories
             </label>
             <div className="space-y-2">
@@ -176,7 +176,7 @@ export default function NewCategory() {
                     type="text"
                     value={subcategory}
                     onChange={(e) => handleSubcategoryChange(index, e.target.value)}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="flex-1 px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
                     placeholder="Subcategory name"
                   />
                   {formData.subcategories.length > 1 && (
@@ -202,7 +202,7 @@ export default function NewCategory() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white mb-2">
               Product Variant Types (e.g., Size, Color, Weight)
             </label>
             <div className="space-y-4">
@@ -213,7 +213,7 @@ export default function NewCategory() {
                       type="text"
                       value={variant.name}
                       onChange={(e) => handleVariantNameChange(variantIndex, e.target.value)}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="flex-1 px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
                       placeholder="Variant type name (e.g., Size, Color, Weight)"
                     />
                     {formData.variants.length > 1 && (
@@ -227,7 +227,7 @@ export default function NewCategory() {
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="block text-xs font-medium text-gray-600">
+                    <label className="block text-xs font-medium text-white">
                       Options for {variant.name || 'this variant type'}
                     </label>
                     {variant.options.map((option, optionIndex) => (
@@ -236,7 +236,7 @@ export default function NewCategory() {
                           type="text"
                           value={option}
                           onChange={(e) => handleVariantOptionChange(variantIndex, optionIndex, e.target.value)}
-                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          className="flex-1 px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
                           placeholder="Option (e.g., S, M, L, XL or Red, Blue, Green)"
                         />
                         {variant.options.length > 1 && (
@@ -275,7 +275,7 @@ export default function NewCategory() {
           <div className="flex justify-end space-x-4">
             <Link
               href="/admin/categories"
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 border border-gray-700 text-white rounded-lg hover:bg-gray-50 transition-colors"
             >
               Cancel
             </Link>

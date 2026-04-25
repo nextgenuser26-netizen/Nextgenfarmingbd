@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Search, User, Phone, Mail, Calendar, MapPin, ShoppingBag, Eye, Plus, Trash2, X, Edit, Download } from 'lucide-react';
 
 export default function AdminCustomers() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -21,15 +22,19 @@ export default function AdminCustomers() {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  // Debounce search term
   useEffect(() => {
-    fetchCustomers();
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  const fetchCustomers = async () => {
+  const refreshCustomers = useCallback(async () => {
     setLoading(true);
     try {
-      const url = searchTerm 
-        ? `/api/admin/customers?search=${encodeURIComponent(searchTerm)}`
+      const url = debouncedSearchTerm
+        ? `/api/admin/customers?search=${encodeURIComponent(debouncedSearchTerm)}`
         : '/api/admin/customers';
       
       const response = await fetch(url);
@@ -42,7 +47,11 @@ export default function AdminCustomers() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [debouncedSearchTerm]);
+
+  useEffect(() => {
+    refreshCustomers();
+  }, [refreshCustomers]);
 
   const handleViewCustomer = async (customer: any) => {
     setSelectedCustomer(customer);
@@ -105,7 +114,7 @@ export default function AdminCustomers() {
       if (response.ok) {
         setIsFormModalOpen(false);
         setSelectedCustomer(null);
-        fetchCustomers();
+        refreshCustomers();
       } else {
         const error = await response.json();
         alert(error.error || 'Failed to save customer');
@@ -128,7 +137,7 @@ export default function AdminCustomers() {
       });
 
       if (response.ok) {
-        fetchCustomers();
+        refreshCustomers();
       } else {
         alert('Failed to delete customer');
       }
@@ -178,7 +187,7 @@ export default function AdminCustomers() {
   return (
     <div>
       <div className="mb-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Customers</h1>
+        <h1 className="text-2xl font-bold text-white">Customers</h1>
         <div className="flex gap-3">
           <button
             onClick={exportToCSV}
@@ -206,7 +215,7 @@ export default function AdminCustomers() {
             placeholder="Search by name, phone, or email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white bg-gray-800"
           />
         </div>
       </div>
