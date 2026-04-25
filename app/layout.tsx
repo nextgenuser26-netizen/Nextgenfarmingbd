@@ -6,6 +6,7 @@ import { AuthProvider } from '@/lib/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import CartDrawer from '@/components/CartDrawer';
 import Favicon from '@/components/Favicon';
+import MaintenanceGuard from '@/components/MaintenanceGuard';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -31,7 +32,9 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <Favicon />
         <AuthProvider>
           <CartProvider>
-            {children}
+            <MaintenanceGuard>
+              {children}
+            </MaintenanceGuard>
             <CartDrawer />
             <Toaster position="bottom-center" />
           </CartProvider>

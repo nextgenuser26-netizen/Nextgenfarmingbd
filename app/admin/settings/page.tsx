@@ -486,17 +486,27 @@ export default function AdminSettings() {
               <button
                 type="button"
                 onClick={() => setSettings({ ...settings, maintenanceMode: !settings?.maintenanceMode })}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${
                   settings?.maintenanceMode ? 'bg-red-600' : 'bg-gray-200'
                 }`}
+                aria-pressed={settings?.maintenanceMode}
               >
+                <span className="sr-only">Toggle maintenance mode</span>
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow ${
                     settings?.maintenanceMode ? 'translate-x-6' : 'translate-x-1'
                   }`}
                 />
               </button>
             </div>
+            {settings?.maintenanceMode && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="text-sm text-red-700 flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  Maintenance mode is currently active. Non-admin users will see the maintenance page.
+                </p>
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Maintenance Message
@@ -508,6 +518,9 @@ export default function AdminSettings() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="We are currently under maintenance. Please check back later."
               />
+              <p className="text-xs text-gray-500 mt-1">
+                This message will be displayed to users when maintenance mode is active.
+              </p>
             </div>
           </div>
         </div>
