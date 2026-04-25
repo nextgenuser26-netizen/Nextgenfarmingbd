@@ -19,17 +19,19 @@ export default function Home() {
   const [deals, setDeals] = useState<any[]>([]);
   const [copiedCoupon, setCopiedCoupon] = useState<string | null>(null);
   const [settings, setSettings] = useState<any>(null);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [countdown, setCountdown] = useState({ hours: 12, minutes: 45, seconds: 30 });
 
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const [productsRes, categoriesRes, bannersRes, dealsRes, settingsRes] = await Promise.all([
+        const [productsRes, categoriesRes, bannersRes, dealsRes, settingsRes, reviewsRes] = await Promise.all([
           fetch('/api/products'),
           fetch('/api/categories'),
           fetch('/api/banners?isActive=true&position=featured-collections'),
           fetch('/api/deals?limit=10'),
-          fetch('/api/settings')
+          fetch('/api/settings'),
+          fetch('/api/reviews?limit=6')
         ]);
 
         const productsData = await productsRes.json();
@@ -37,10 +39,12 @@ export default function Home() {
         const bannersData = await bannersRes.json();
         const dealsData = await dealsRes.json();
         const settingsData = await settingsRes.json();
+        const reviewsData = await reviewsRes.json();
 
         setProducts(productsData.products || []);
         setCategories(categoriesData.categories || []);
         setSettings(settingsData.settings);
+        setReviews(reviewsData.reviews || []);
         console.log('Settings loaded:', settingsData.settings);
         console.log('Banner image:', settingsData.settings?.bannerImage);
         console.log('Ticker messages:', settingsData.settings?.tickerMessages);
@@ -480,30 +484,80 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { name: 'আরিফুল ইসলাম', text: 'নেক্সটজেন FarmingBD-এর ঘি সত্যি চমৎকার! দানাদার এবং অসাধারণ ঘ্রাণ। প্যাকেজিং টাও অনেক প্রিমিয়াম ছিল।', role: 'নিয়মিত গ্রাহক' },
-              { name: 'সাদিয়া সুলতানা', text: 'সুন্দরবনের খলিসা মধু এর আগে অনেক জায়গা থেকে নিয়েছি কিন্তু এখানকারটা একদম খাঁটি মনে হলো। ধন্যবাদ!', role: 'গৃহিণী' },
-              { name: 'মাহমুদ হাসান', text: 'অর্ডার করার পরের দিনই ডেলিভারি পেয়েছি। পণ্যের মান নিয়ে কোনো কমপ্লেন নেই। সার্ভিস খুব ফাস্ট।', role: 'চাকুরীজীবী' }
-            ].map((test, i) => (
-              <div key={i} className="bg-white p-10 rounded-[3rem] shadow-sm border border-emerald-50 hover:shadow-xl transition-all relative group">
-                <div className="absolute top-0 right-10 -translate-y-1/2 bg-brand-green w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-brand-green/20">
-                  <Star size={20} fill="currentColor" />
-                </div>
-                <div className="space-y-6">
-                  <p className="text-slate-600 italic leading-relaxed font-medium">&quot;{test.text}&quot;</p>
-                  <div className="pt-6 border-t border-slate-50 flex items-center gap-4">
-                    <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-brand-green font-black">
-                      {test.name[0]}
-                    </div>
-                    <div>
-                      <h4 className="font-black text-brand-green-dark">{test.name}</h4>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{test.role}</p>
+          <div className="overflow-hidden">
+            <motion.div 
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              className="flex gap-6"
+            >
+              {reviews.length > 0 ? (
+                // Show first 3 reviews, then duplicate for infinite loop
+                [...reviews.slice(0, 3), ...reviews.slice(0, 3)].map((review: any, i: number) => (
+                  <div key={`${review._id}-${i}`} className="flex-shrink-0 w-full md:w-[calc(33.333%-16px)]">
+                    <div className="bg-white p-10 rounded-[3rem] shadow-sm border border-emerald-50 hover:shadow-xl transition-all relative group h-full">
+                      <div className="absolute top-0 right-10 -translate-y-1/2 bg-brand-green w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-brand-green/20">
+                        <Star size={20} fill="currentColor" />
+                      </div>
+                      <div className="space-y-6">
+                        <div className="flex gap-1 mb-2">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              size={16}
+                              className={star <= review.rating ? 'text-amber-400' : 'text-slate-200'}
+                              fill={star <= review.rating ? 'currentColor' : 'none'}
+                            />
+                          ))}
+                        </div>
+                        <p className="text-slate-600 italic leading-relaxed font-medium">&quot;{review.comment}&quot;</p>
+                        <div className="pt-6 border-t border-slate-50 flex items-center gap-4">
+                          <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-brand-green font-black">
+                            {review.userName.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <h4 className="font-black text-brand-green-dark">{review.userName}</h4>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                              {new Date(review.createdAt).toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' })}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                ))
+              ) : (
+                // Fallback to hardcoded testimonials if no reviews
+                [...[
+                  { name: 'আরিফুল ইসলাম', text: 'নেক্সটজেন FarmingBD-এর ঘি সত্যি চমৎকার! দানাদার এবং অসাধারণ ঘ্রাণ। প্যাকেজিং টাও অনেক প্রিমিয়াম ছিল।', role: 'নিয়মিত গ্রাহক' },
+                  { name: 'সাদিয়া সুলতানা', text: 'সুন্দরবনের খলিসা মধু এর আগে অনেক জায়গা থেকে নিয়েছি কিন্তু এখানকারটা একদম খাঁটি মনে হলো। ধন্যবাদ!', role: 'গৃহিণী' },
+                  { name: 'মাহমুদ হাসান', text: 'অর্ডার করার পরের দিনই ডেলিভারি পেয়েছি। পণ্যের মান নিয়ে কোনো কমপ্লেন নেই। সার্ভিস খুব ফাস্ট।', role: 'চাকুরীজীবী' }
+                ], ...[
+                  { name: 'আরিফুল ইসলাম', text: 'নেক্সটজেন FarmingBD-এর ঘি সত্যি চমৎকার! দানাদার এবং অসাধারণ ঘ্রাণ। প্যাকেজিং টাও অনেক প্রিমিয়াম ছিল।', role: 'নিয়মিত গ্রাহক' },
+                  { name: 'সাদিয়া সুলতানা', text: 'সুন্দরবনের খলিসা মধু এর আগে অনেক জায়গা থেকে নিয়েছি কিন্তু এখানকারটা একদম খাঁটি মনে হলো। ধন্যবাদ!', role: 'গৃহিণী' },
+                  { name: 'মাহমুদ হাসান', text: 'অর্ডার করার পরের দিনই ডেলিভারি পেয়েছি। পণ্যের মান নিয়ে কোনো কমপ্লেন নেই। সার্ভিস খুব ফাস্ট।', role: 'চাকুরীজীবী' }
+                ]].map((test, i: number) => (
+                  <div key={`fallback-${i}`} className="flex-shrink-0 w-full md:w-[calc(33.333%-16px)]">
+                    <div className="bg-white p-10 rounded-[3rem] shadow-sm border border-emerald-50 hover:shadow-xl transition-all relative group h-full">
+                      <div className="absolute top-0 right-10 -translate-y-1/2 bg-brand-green w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-brand-green/20">
+                        <Star size={20} fill="currentColor" />
+                      </div>
+                      <div className="space-y-6">
+                        <p className="text-slate-600 italic leading-relaxed font-medium">&quot;{test.text}&quot;</p>
+                        <div className="pt-6 border-t border-slate-50 flex items-center gap-4">
+                          <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-brand-green font-black">
+                            {test.name[0]}
+                          </div>
+                          <div>
+                            <h4 className="font-black text-brand-green-dark">{test.name}</h4>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{test.role}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </motion.div>
           </div>
         </div>
       </section>

@@ -40,6 +40,10 @@ export default function BannerCarousel() {
 
   useEffect(() => {
     fetchBanners();
+  }, []);
+
+  useEffect(() => {
+    if (banners.length === 0) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % banners.length);
     }, 5000);
@@ -91,6 +95,7 @@ export default function BannerCarousel() {
   }
 
   const currentBanner = banners[currentIndex];
+  if (!currentBanner) return null;
   const currentImage = isMobile && currentBanner.mobileImage ? currentBanner.mobileImage : currentBanner.image;
 
   return (

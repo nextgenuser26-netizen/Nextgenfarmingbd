@@ -5,7 +5,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 interface User {
   id: string;
   name: string;
-  email: string;
+  email?: string;
+  phone?: string;
   avatar?: string;
   role: 'user' | 'admin';
 }

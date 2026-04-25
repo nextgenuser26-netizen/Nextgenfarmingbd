@@ -17,29 +17,38 @@ import {
   Heart,
   Share2,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Edit2,
+  Trash2,
+  X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
 import { useCart } from '@/lib/CartContext';
 import { toast } from 'react-hot-toast';
-
-const relatedProducts = [
-  { _id: '101', name: 'কালোজিরা মধু', price: 950, image: 'https://picsum.photos/seed/honey2/400/400' },
-  { _id: '102', name: 'খাঁটি সরিষার তেল', price: 280, image: 'https://picsum.photos/seed/oil2/400/400' },
-  { _id: '103', name: 'লিচু ফুলের মধু', price: 850, image: 'https://picsum.photos/seed/honey3/400/400' },
-  { _id: '104', name: 'অর্গানিক বাদাম মিক্স', price: 550, image: 'https://picsum.photos/seed/nuts2/400/400' },
-];
+import { useAuth } from '@/lib/AuthContext';
 
 export default function SingleProductPage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
+  const { user } = useAuth();
   const [baseProduct, setBaseProduct] = useState<any>(null);
+  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [editingReview, setEditingReview] = useState<any>(null);
+  const [editRating, setEditRating] = useState(5);
+  const [editComment, setEditComment] = useState('');
+  const [submittingEdit, setSubmittingEdit] = useState(false);
 
   useEffect(() => {
     fetchProduct();
+    fetchAllProducts();
+    fetchReviews();
   }, [id]);
 
   const fetchProduct = async () => {
@@ -51,6 +60,229 @@ export default function SingleProductPage() {
       console.error('Error fetching product:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAllProducts = async () => {
+    try {
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      setAllProducts(data.products || []);
+    } catch (error) {
+      console.error('Error fetching all products:', error);
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const res = await fetch(`/api/reviews?productId=${id}`);
+      const data = await res.json();
+      setReviews(data.reviews || []);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    }
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!user) {
+      toast.error('অনুগ্রহ করে রিভিউ দেওয়ার জন্য লগইন করুন', {
+        style: {
+          borderRadius: '1.5rem',
+          background: '#dc2626',
+          color: '#fff',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          padding: '12px 24px'
+        },
+      });
+      return;
+    }
+
+    if (!reviewComment.trim()) {
+      toast.error('অনুগ্রহ করে আপনার মতামত লিখুন', {
+        style: {
+          borderRadius: '1.5rem',
+          background: '#dc2626',
+          color: '#fff',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          padding: '12px 24px'
+        },
+      });
+      return;
+    }
+
+    setSubmittingReview(true);
+    
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: id,
+          userId: user.id,
+          userName: user.name,
+          rating: reviewRating,
+          comment: reviewComment,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to submit review');
+      }
+
+      toast.success('রিভিউ সফলভাবে জমা হয়েছে!', {
+        style: {
+          borderRadius: '1.5rem',
+          background: '#064e3b',
+          color: '#fff',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          padding: '12px 24px'
+        },
+      });
+
+      setReviewComment('');
+      setReviewRating(5);
+      fetchReviews();
+    } catch (error: any) {
+      toast.error(error.message || 'রিভিউ জমা দিতে ব্যর্থ হয়েছে', {
+        style: {
+          borderRadius: '1.5rem',
+          background: '#dc2626',
+          color: '#fff',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          padding: '12px 24px'
+        },
+      });
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  const handleEditReview = (review: any) => {
+    setEditingReview(review);
+    setEditRating(review.rating);
+    setEditComment(review.comment);
+  };
+
+  const handleUpdateReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!user || !editingReview) return;
+
+    if (!editComment.trim()) {
+      toast.error('অনুগ্রহ করে আপনার মতামত লিখুন', {
+        style: {
+          borderRadius: '1.5rem',
+          background: '#dc2626',
+          color: '#fff',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          padding: '12px 24px'
+        },
+      });
+      return;
+    }
+
+    setSubmittingEdit(true);
+    
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          reviewId: editingReview._id,
+          userId: user.id,
+          rating: editRating,
+          comment: editComment,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to update review');
+      }
+
+      toast.success('রিভিউ সফলভাবে আপডেট হয়েছে!', {
+        style: {
+          borderRadius: '1.5rem',
+          background: '#064e3b',
+          color: '#fff',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          padding: '12px 24px'
+        },
+      });
+
+      setEditingReview(null);
+      setEditComment('');
+      setEditRating(5);
+      fetchReviews();
+    } catch (error: any) {
+      toast.error(error.message || 'রিভিউ আপডেট করতে ব্যর্থ হয়েছে', {
+        style: {
+          borderRadius: '1.5rem',
+          background: '#dc2626',
+          color: '#fff',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          padding: '12px 24px'
+        },
+      });
+    } finally {
+      setSubmittingEdit(false);
+    }
+  };
+
+  const handleDeleteReview = async (reviewId: string) => {
+    if (!user) return;
+
+    if (!confirm('আপনি কি নিশ্চিত যে আপনি এই রিভিউটি মুছে ফেলতে চান?')) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/reviews?reviewId=${reviewId}&userId=${user.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to delete review');
+      }
+
+      toast.success('রিভিউ সফলভাবে মুছে ফেলা হয়েছে!', {
+        style: {
+          borderRadius: '1.5rem',
+          background: '#064e3b',
+          color: '#fff',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          padding: '12px 24px'
+        },
+      });
+
+      fetchReviews();
+    } catch (error: any) {
+      toast.error(error.message || 'রিভিউ মুছে ফেলতে ব্যর্থ হয়েছে', {
+        style: {
+          borderRadius: '1.5rem',
+          background: '#dc2626',
+          color: '#fff',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          padding: '12px 24px'
+        },
+      });
     }
   };
 
@@ -87,6 +319,25 @@ export default function SingleProductPage() {
       deliveryInfo: 'ঢাকার ভেতরে অথবা ১০০০০ টাকার উপরে কেনাকাটায় ফ্রি ডেলিভারি! ঢাকার ভেতরে ২৪-৪৮ ঘণ্টা এবং ঢাকার বাইরে ৩-৫ কার্যদিবসের মধ্যে কুরিয়ারের মাধ্যমে আমরা পণ্য প্রতিটি জেলায় পৌঁছে দিয়ে থাকি।'
     };
   }, [baseProduct]);
+
+  // Get related products from the same category
+  const relatedProducts = useMemo(() => {
+    if (!product || !allProducts.length) return [];
+    
+    const currentCategory = product.category;
+    if (!currentCategory) return [];
+    
+    // Filter products from the same category, excluding the current product
+    return allProducts
+      .filter((p: any) => p.category === currentCategory && p._id !== product.id)
+      .slice(0, 4)
+      .map((p: any) => ({
+        _id: p._id,
+        name: p.name,
+        price: p.price,
+        image: p.image || p.images?.[0] || 'https://picsum.photos/seed/product/400/400'
+      }));
+  }, [product, allProducts]);
 
   const [mainImage, setMainImage] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -529,6 +780,185 @@ export default function SingleProductPage() {
                 </motion.div>
               </AnimatePresence>
            </div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-20">
+        <div className="bg-white rounded-[3rem] border border-emerald-50 shadow-sm p-8 md:p-16">
+          <div className="space-y-12">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl md:text-5xl font-black text-brand-green-dark italic">কাস্টমার রিভিউ</h2>
+              <p className="text-slate-400 font-bold italic">আমাদের গ্রাহকদের মতামত</p>
+            </div>
+
+            {/* Review Form */}
+            <div className="bg-[#f9faf5] rounded-[2.5rem] p-8 border border-emerald-50">
+              {user ? (
+                <form onSubmit={handleSubmitReview} className="space-y-6">
+                  <div className="space-y-4">
+                    <label className="text-sm font-black text-slate-400 uppercase tracking-widest">রেটিং দিন</label>
+                    <div className="flex gap-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setReviewRating(star)}
+                          className={`text-3xl transition-all ${star <= reviewRating ? 'text-amber-400' : 'text-slate-200'} hover:text-amber-400`}
+                        >
+                          <Star size={32} fill={star <= reviewRating ? 'currentColor' : 'none'} />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-sm font-black text-slate-400 uppercase tracking-widest">আপনার মতামত</label>
+                    <textarea
+                      value={reviewComment}
+                      onChange={(e) => setReviewComment(e.target.value)}
+                      placeholder="পণ্যটি সম্পর্কে আপনার অভিজ্ঞতা শেয়ার করুন..."
+                      className="w-full bg-white border-2 border-emerald-50 rounded-2xl p-6 text-sm focus:ring-2 focus:ring-brand-green outline-none resize-none h-32"
+                      maxLength={500}
+                    />
+                    <p className="text-xs text-slate-400 text-right">{reviewComment.length}/500</p>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={submittingReview}
+                    className="w-full bg-brand-green text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 shadow-xl shadow-brand-green/10 hover:bg-brand-green-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {submittingReview ? 'জমা হচ্ছে...' : 'রিভিউ জমা দিন'}
+                  </button>
+                </form>
+              ) : (
+                <div className="text-center py-8 space-y-4">
+                  <p className="text-slate-500 font-bold italic">রিভিউ দেওয়ার জন্য অনুগ্রহ করে লগইন করুন</p>
+                  <Link href="/login" className="inline-block bg-brand-green text-white px-8 py-3 rounded-full font-black text-sm shadow-xl shadow-brand-green/20 hover:bg-brand-green-dark transition-all">
+                    লগইন করুন
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Reviews List */}
+            <div className="space-y-6">
+              {reviews.length > 0 ? (
+                reviews.map((review: any) => (
+                  <div key={review._id} className="bg-slate-50 rounded-2xl p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-brand-green rounded-full flex items-center justify-center text-white font-black text-lg">
+                          {review.userName.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <h4 className="font-black text-brand-green-dark">{review.userName}</h4>
+                          <p className="text-xs text-slate-400">
+                            {new Date(review.createdAt).toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' })}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              size={16}
+                              className={star <= review.rating ? 'text-amber-400' : 'text-slate-200'}
+                              fill={star <= review.rating ? 'currentColor' : 'none'}
+                            />
+                          ))}
+                        </div>
+                        {user && review.userId === user.id && (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleEditReview(review)}
+                              className="text-brand-green hover:text-brand-green-dark transition-colors"
+                              title="Edit review"
+                            >
+                              <Edit2 size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteReview(review._id)}
+                              className="text-red-500 hover:text-red-600 transition-colors"
+                              title="Delete review"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-slate-600 italic leading-relaxed">{review.comment}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-12 bg-slate-50 rounded-2xl">
+                  <p className="text-slate-400 italic">এখনো কোনো রিভিউ নেই। প্রথম রিভিউ দিন!</p>
+                </div>
+              )}
+            </div>
+
+            {/* Edit Review Modal */}
+            {editingReview && (
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-[2.5rem] p-8 max-w-lg w-full space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-black text-brand-green-dark italic">রিভিউ এডিট করুন</h3>
+                    <button
+                      onClick={() => setEditingReview(null)}
+                      className="text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                      <X size={24} />
+                    </button>
+                  </div>
+                  <form onSubmit={handleUpdateReview} className="space-y-6">
+                    <div className="space-y-4">
+                      <label className="text-sm font-black text-slate-400 uppercase tracking-widest">রেটিং দিন</label>
+                      <div className="flex gap-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setEditRating(star)}
+                            className={`text-3xl transition-all ${star <= editRating ? 'text-amber-400' : 'text-slate-200'} hover:text-amber-400`}
+                          >
+                            <Star size={32} fill={star <= editRating ? 'currentColor' : 'none'} />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <label className="text-sm font-black text-slate-400 uppercase tracking-widest">আপনার মতামত</label>
+                      <textarea
+                        value={editComment}
+                        onChange={(e) => setEditComment(e.target.value)}
+                        placeholder="পণ্যটি সম্পর্কে আপনার অভিজ্ঞতা শেয়ার করুন..."
+                        className="w-full bg-white border-2 border-emerald-50 rounded-2xl p-6 text-sm focus:ring-2 focus:ring-brand-green outline-none resize-none h-32"
+                        maxLength={500}
+                      />
+                      <p className="text-xs text-slate-400 text-right">{editComment.length}/500</p>
+                    </div>
+                    <div className="flex gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setEditingReview(null)}
+                        className="flex-1 bg-slate-100 text-slate-600 py-4 rounded-2xl font-black text-sm hover:bg-slate-200 transition-all"
+                      >
+                        বাতিল করুন
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={submittingEdit}
+                        className="flex-1 bg-brand-green text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 shadow-xl shadow-brand-green/10 hover:bg-brand-green-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {submittingEdit ? 'আপডেট হচ্ছে...' : 'আপডেট করুন'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
