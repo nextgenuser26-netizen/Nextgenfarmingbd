@@ -38,7 +38,19 @@ export default function Footer() {
                 </div>
               )}
               <span className="text-2xl font-bold text-white tracking-tight italic">
-                {settings?.siteName || 'নেক্সটজেন FarmingBD'}
+                {settings?.siteName ? (
+                  settings.siteName.split(/(Gen)/g).map((part: string, i: number) => 
+                    part === 'Gen' ? (
+                      <span key={i} style={{ color: '#CDB290' }}>Gen</span>
+                    ) : (
+                      <span key={i}>{part}</span>
+                    )
+                  )
+                ) : (
+                  <>
+                    নেক্সট<span style={{ color: '#CDB290' }}>জেন</span> FarmingBD
+                  </>
+                )}
               </span>
             </div>
             <p className="text-emerald-50/70 text-sm leading-relaxed italic">
@@ -108,7 +120,7 @@ export default function Footer() {
       
       {/* Micro Bottom Footer */}
       <div className="w-full bg-[#f0ede4] py-3 px-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-500 border-t border-slate-200 gap-4">
-        <span>© ২০২৬ নেক্সটজেন FarmingBD - খাঁটি পণ্যের বিশ্বস্ত প্রতিষ্ঠান</span>
+        <span>© ২০২৬ নেক্সট<span style={{ color: '#CDB290' }}>জেন</span> FarmingBD - খাঁটি পণ্যের বিশ্বস্ত প্রতিষ্ঠান</span>
         <div className="flex gap-6 uppercase tracking-wider font-bold">
           <Link href="/terms" className="hover:text-brand-green">শর্তাবলী</Link>
           <Link href="/privacy" className="hover:text-brand-green">গোপনীয়তা নীতি</Link>

@@ -9,6 +9,7 @@ export default function AdminSettings() {
   const [saving, setSaving] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string>('');
   const [faviconPreview, setFaviconPreview] = useState<string>('');
+  const [bannerPreview, setBannerPreview] = useState<string>('');
 
   useEffect(() => {
     fetchSettings();
@@ -18,9 +19,12 @@ export default function AdminSettings() {
     try {
       const res = await fetch('/api/settings');
       const data = await res.json();
+      console.log('Fetched settings data:', data);
+      console.log('Banner image from fetch:', data.settings?.bannerImage);
       setSettings(data.settings);
       if (data.settings?.logo) setLogoPreview(data.settings.logo);
       if (data.settings?.favicon) setFaviconPreview(data.settings.favicon);
+      if (data.settings?.bannerImage) setBannerPreview(data.settings.bannerImage);
     } catch (error) {
       console.error('Error fetching settings:', error);
     } finally {
@@ -28,8 +32,9 @@ export default function AdminSettings() {
     }
   };
 
-  const handleImageUpload = async (file: File, type: 'logo' | 'favicon') => {
+  const handleImageUpload = async (file: File, type: 'logo' | 'favicon' | 'banner') => {
     try {
+      console.log('Uploading image:', file.name, 'Type:', type);
       const formData = new FormData();
       formData.append('file', file);
 
@@ -39,15 +44,32 @@ export default function AdminSettings() {
       });
 
       const data = await res.json();
+      console.log('Upload response:', data);
+      
+      if (!res.ok) {
+        console.error('Upload failed:', data.error);
+        alert(`Upload failed: ${data.error}`);
+        return;
+      }
+      
       if (data.urls && data.urls.length > 0) {
         const uploadedUrl = data.urls[0];
+        console.log('Uploaded URL:', uploadedUrl);
+        
         if (type === 'logo') {
           setSettings({ ...settings, logo: uploadedUrl });
           setLogoPreview(uploadedUrl);
-        } else {
+        } else if (type === 'favicon') {
           setSettings({ ...settings, favicon: uploadedUrl });
           setFaviconPreview(uploadedUrl);
+        } else if (type === 'banner') {
+          setSettings({ ...settings, bannerImage: uploadedUrl });
+          setBannerPreview(uploadedUrl);
+          console.log('Banner image set in state:', uploadedUrl);
         }
+      } else {
+        console.error('No URLs in response:', data);
+        alert('Upload failed: No URL returned');
       }
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -60,6 +82,9 @@ export default function AdminSettings() {
     setSaving(true);
 
     try {
+      console.log('Saving settings:', settings);
+      console.log('Banner image in settings:', settings?.bannerImage);
+      
       const res = await fetch('/api/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -68,8 +93,10 @@ export default function AdminSettings() {
 
       if (res.ok) {
         alert('Settings saved successfully!');
+        console.log('Settings saved successfully');
       } else {
         alert('Failed to save settings');
+        console.error('Failed to save settings, response:', await res.text());
       }
     } catch (error) {
       console.error('Error saving settings:', error);
@@ -222,6 +249,60 @@ export default function AdminSettings() {
                     Upload Favicon
                   </label>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Banner Image */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <ImageIcon className="w-5 h-5" />
+            Home Page Banner Image
+          </h2>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Banner Image
+            </label>
+            <p className="text-sm text-gray-500 mb-4">
+              This image will be displayed in the "অর্গানিক ফুড নিয়ে চিন্তিত?" section on the home page.
+            </p>
+            <div className="space-y-4">
+              {bannerPreview && (
+                <div className="relative w-full max-w-md h-48 border border-gray-300 rounded-lg overflow-hidden">
+                  <img src={bannerPreview} alt="Banner preview" className="w-full h-full object-cover" />
+                  <p className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-2 text-center">
+                    Banner image uploaded (will be saved when you click Save Settings)
+                  </p>
+                </div>
+              )}
+              {!bannerPreview && (
+                <div className="w-full max-w-md h-48 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
+                  <p className="text-gray-400 text-sm">No banner image uploaded</p>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    console.log('File selected:', file);
+                    if (file) {
+                      console.log('File details:', file.name, file.size, file.type);
+                      handleImageUpload(file, 'banner');
+                    }
+                  }}
+                  className="hidden"
+                  id="banner-upload"
+                />
+                <label
+                  htmlFor="banner-upload"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg cursor-pointer transition-colors"
+                >
+                  <Upload className="w-4 h-4" />
+                  Upload Banner Image
+                </label>
               </div>
             </div>
           </div>

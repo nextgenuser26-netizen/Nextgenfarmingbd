@@ -7,6 +7,7 @@ export interface ISettings extends Document {
   siteDescriptionEn?: string;
   logo?: string;
   favicon?: string;
+  bannerImage?: string;
   contactEmail: string;
   contactPhone: string;
   contactAddress?: string;
@@ -51,6 +52,10 @@ const SettingsSchema = new Schema<ISettings>(
     },
     favicon: {
       type: String
+    },
+    bannerImage: {
+      type: String,
+      default: ''
     },
     contactEmail: {
       type: String,

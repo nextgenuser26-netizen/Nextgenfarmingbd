@@ -19,24 +19,30 @@ export default function Home() {
   const [deals, setDeals] = useState<any[]>([]);
   const [copiedCoupon, setCopiedCoupon] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [settings, setSettings] = useState<any>(null);
 
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const [productsRes, categoriesRes, bannersRes, dealsRes] = await Promise.all([
+        const [productsRes, categoriesRes, bannersRes, dealsRes, settingsRes] = await Promise.all([
           fetch('/api/products'),
           fetch('/api/categories'),
           fetch('/api/banners?isActive=true&position=featured-collections'),
-          fetch('/api/deals?limit=10')
+          fetch('/api/deals?limit=10'),
+          fetch('/api/settings')
         ]);
 
         const productsData = await productsRes.json();
         const categoriesData = await categoriesRes.json();
         const bannersData = await bannersRes.json();
         const dealsData = await dealsRes.json();
+        const settingsData = await settingsRes.json();
 
         setProducts(productsData.products || []);
         setCategories(categoriesData.categories || []);
+        setSettings(settingsData.settings);
+        console.log('Settings loaded:', settingsData.settings);
+        console.log('Banner image:', settingsData.settings?.bannerImage);
         
         const banners = bannersData.banners || [];
         if (banners.length > 0) {
@@ -483,13 +489,28 @@ export default function Home() {
             <div className="hidden md:flex justify-end pr-8 relative h-[450px]">
               <div className="absolute -inset-10 bg-white/10 rounded-full blur-[100px]" />
               <div className="relative w-full h-full transform hover:scale-105 transition-transform duration-1000">
-                <Image 
-                  src="https://picsum.photos/seed/harvest/800/600" 
-                  alt="Harvest" 
-                  fill
-                  className="rounded-[3rem] shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700 object-cover border-8 border-white/10"
-                  referrerPolicy="no-referrer"
-                />
+                {settings && settings.bannerImage ? (
+                  <img 
+                    src={settings.bannerImage} 
+                    alt="Banner" 
+                    className="w-full h-full rounded-[3rem] shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700 object-cover border-8 border-white/10"
+                    onError={(e) => {
+                      console.error('Image load error:', e);
+                      console.error('Failed URL:', settings.bannerImage);
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <p className="text-white/50 text-sm">No banner image set</p>
+                    <Image 
+                      src="https://picsum.photos/seed/harvest/800/600" 
+                      alt="Banner" 
+                      fill
+                      className="rounded-[3rem] shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700 object-cover border-8 border-white/10 absolute inset-0"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>

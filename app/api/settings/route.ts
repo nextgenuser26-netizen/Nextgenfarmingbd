@@ -21,10 +21,21 @@ export async function GET(request: NextRequest) {
         currency: 'BDT',
         currencySymbol: '৳',
         shippingCost: 60,
-        freeShippingThreshold: 1500
+        freeShippingThreshold: 1500,
+        bannerImage: ''
       });
       await settings.save();
+    } else {
+      // If bannerImage field doesn't exist in the document, add it and save
+      if (settings.bannerImage === undefined || settings.bannerImage === null) {
+        console.log('Initializing bannerImage field in existing document');
+        settings.bannerImage = '';
+        await settings.save();
+      }
     }
+    
+    console.log('Fetched settings:', settings);
+    console.log('Banner image from DB:', settings.bannerImage);
     
     return NextResponse.json({ settings });
   } catch (error) {
@@ -40,29 +51,49 @@ export async function PUT(request: NextRequest) {
     const settingsData = await request.json();
     
     console.log('Updating settings with data:', settingsData);
+    console.log('Banner image in request:', settingsData.bannerImage);
     
-    // Get the first (and only) settings document, or create if it doesn't exist
-    let settings = await Settings.findOne();
-    
-    if (!settings) {
-      // Create new settings with maintenance mode fields
-      settings = new Settings({
-        ...settingsData,
-        maintenanceMode: settingsData.maintenanceMode || false,
-        maintenanceMessage: settingsData.maintenanceMessage || 'We are currently under maintenance. Please check back later.'
-      });
-    } else {
-      // Update existing settings, ensuring maintenance fields are preserved
-      Object.assign(settings, {
-        ...settingsData,
-        maintenanceMode: settingsData.maintenanceMode !== undefined ? settingsData.maintenanceMode : settings.maintenanceMode,
-        maintenanceMessage: settingsData.maintenanceMessage !== undefined ? settingsData.maintenanceMessage : settings.maintenanceMessage
-      });
-    }
-    
-    await settings.save();
+    // Use findOneAndUpdate with upsert to ensure bannerImage is saved
+    const settings = await Settings.findOneAndUpdate(
+      {}, // Find any document (there should only be one)
+      {
+        $set: {
+          siteName: settingsData.siteName,
+          siteNameEn: settingsData.siteNameEn,
+          siteDescription: settingsData.siteDescription,
+          siteDescriptionEn: settingsData.siteDescriptionEn,
+          logo: settingsData.logo,
+          favicon: settingsData.favicon,
+          bannerImage: settingsData.bannerImage || '',
+          contactEmail: settingsData.contactEmail,
+          contactPhone: settingsData.contactPhone,
+          contactAddress: settingsData.contactAddress,
+          socialFacebook: settingsData.socialFacebook,
+          socialInstagram: settingsData.socialInstagram,
+          socialTwitter: settingsData.socialTwitter,
+          socialYoutube: settingsData.socialYoutube,
+          currency: settingsData.currency,
+          currencySymbol: settingsData.currencySymbol,
+          taxRate: settingsData.taxRate,
+          shippingCostInsideDhaka: settingsData.shippingCostInsideDhaka,
+          shippingCostOutsideDhaka: settingsData.shippingCostOutsideDhaka,
+          freeShippingThreshold: settingsData.freeShippingThreshold,
+          maintenanceMode: settingsData.maintenanceMode,
+          maintenanceMessage: settingsData.maintenanceMessage,
+          seoTitle: settingsData.seoTitle,
+          seoDescription: settingsData.seoDescription,
+          seoKeywords: settingsData.seoKeywords
+        }
+      },
+      {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true
+      }
+    );
     
     console.log('Settings saved successfully:', settings);
+    console.log('Banner image after save:', settings.bannerImage);
     
     return NextResponse.json({ settings });
   } catch (error) {
