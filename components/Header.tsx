@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Search, ShoppingCart, User, Menu, Phone, X, ChevronDown, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { categories, products } from '@/lib/data';
+import { categories } from '@/lib/data';
 import Image from 'next/image';
 import { useCart } from '@/lib/CartContext';
 
@@ -15,11 +15,14 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [settings, setSettings] = useState<any>(null);
+  const [products, setProducts] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchSettings();
+    fetchProducts();
   }, []);
 
   const fetchSettings = async () => {
@@ -32,14 +35,34 @@ export default function Header() {
     }
   };
 
-  const searchResults = React.useMemo(() => {
-    if (searchQuery.trim().length > 0) {
-      return products.filter(p => 
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        p.name_en.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 6);
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      setProducts(data.products || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
     }
-    return [];
+  };
+
+  useEffect(() => {
+    const performSearch = async () => {
+      if (searchQuery.trim().length > 0) {
+        try {
+          const res = await fetch(`/api/products?search=${encodeURIComponent(searchQuery)}`);
+          const data = await res.json();
+          setSearchResults((data.products || []).slice(0, 6));
+        } catch (error) {
+          console.error('Error searching products:', error);
+          setSearchResults([]);
+        }
+      } else {
+        setSearchResults([]);
+      }
+    };
+
+    const debounceTimer = setTimeout(performSearch, 300);
+    return () => clearTimeout(debounceTimer);
   }, [searchQuery]);
 
   useEffect(() => {
@@ -152,8 +175,8 @@ export default function Header() {
                 <div className="max-h-[400px] overflow-y-auto">
                   {searchResults.map((product) => (
                     <Link 
-                      key={product.id} 
-                      href={`/shop/${product.id}`}
+                      key={product._id} 
+                      href={`/shop/${product._id}`}
                       onClick={() => {
                         setIsSearchFocused(false);
                         setSearchQuery('');
@@ -161,12 +184,21 @@ export default function Header() {
                       className="flex items-center gap-4 p-3 hover:bg-emerald-50 transition-colors group border-b border-slate-50 last:border-none"
                     >
                       <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 border border-slate-100">
-                        <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-110 transition-transform" />
+                        <Image 
+                          src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.jpg'} 
+                          alt={product.name} 
+                          fill 
+                          className="object-cover group-hover:scale-110 transition-transform" 
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-bold text-slate-800 italic truncate group-hover:text-brand-green transition-colors">{product.name}</h4>
                         <div className="flex items-center gap-2">
-                          <span className="text-brand-green font-black text-xs italic">৳{product.price}</span>
+                          <span className="text-brand-green font-black text-xs italic">
+                            ৳{product.hasVariants && product.variants && product.variants.length > 0 
+                              ? Math.min(...product.variants.map((v: any) => v.price))
+                              : product.price}
+                          </span>
                           {product.oldPrice && <span className="text-[10px] text-slate-300 line-through">৳{product.oldPrice}</span>}
                         </div>
                       </div>
@@ -247,8 +279,8 @@ export default function Header() {
               <div className="max-h-[300px] overflow-y-auto">
                 {searchResults.map((product) => (
                   <Link 
-                    key={product.id} 
-                    href={`/shop/${product.id}`}
+                    key={product._id} 
+                    href={`/shop/${product._id}`}
                     onClick={() => {
                       setIsSearchFocused(false);
                       setSearchQuery('');
@@ -256,11 +288,20 @@ export default function Header() {
                     className="flex items-center gap-3 p-3 hover:bg-emerald-50 border-b border-slate-50 last:border-none"
                   >
                     <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
-                      <Image src={product.image} alt={product.name} fill className="object-cover" />
+                      <Image 
+                        src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.jpg'} 
+                        alt={product.name} 
+                        fill 
+                        className="object-cover" 
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-xs font-bold text-slate-800 italic truncate">{product.name}</h4>
-                      <p className="text-brand-green font-black text-[10px] italic">৳{product.price}</p>
+                      <p className="text-brand-green font-black text-[10px] italic">
+                        ৳{product.hasVariants && product.variants && product.variants.length > 0 
+                          ? Math.min(...product.variants.map((v: any) => v.price))
+                          : product.price}
+                      </p>
                     </div>
                   </Link>
                 ))}
