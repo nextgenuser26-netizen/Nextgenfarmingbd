@@ -1,5 +1,5 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://nextgen-farming.netlify.app/ />
+<img width="1200" height="475" alt="GHBanner" src="https://nextgenfarmingbd.vercel.app/" />
 </div>
 
 This contains everything you need to run your app locally.
