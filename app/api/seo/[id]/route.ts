@@ -4,12 +4,13 @@ import PageSEO from '@/lib/models/PageSEO';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await mongoose.connect(process.env.MONGODB_URI!);
 
-    const seoData = await PageSEO.findById(params.id);
+    const { id } = await params;
+    const seoData = await PageSEO.findById(id);
 
     if (!seoData) {
       return NextResponse.json(
@@ -30,18 +31,19 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await mongoose.connect(process.env.MONGODB_URI!);
 
     const body = await request.json();
+    const { id } = await params;
 
     // If pagePath is being changed, check for duplicates
     if (body.pagePath) {
       const existing = await PageSEO.findOne({
         pagePath: body.pagePath,
-        _id: { $ne: params.id }
+        _id: { $ne: id }
       });
       if (existing) {
         return NextResponse.json(
@@ -52,7 +54,7 @@ export async function PUT(
     }
 
     const seoData = await PageSEO.findByIdAndUpdate(
-      params.id,
+      id,
       { $set: body },
       { new: true, runValidators: true }
     );
@@ -76,12 +78,13 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await mongoose.connect(process.env.MONGODB_URI!);
 
-    const seoData = await PageSEO.findByIdAndDelete(params.id);
+    const { id } = await params;
+    const seoData = await PageSEO.findByIdAndDelete(id);
 
     if (!seoData) {
       return NextResponse.json(
