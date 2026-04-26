@@ -9,7 +9,6 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   compress: true,
-  swcMinify: true,
   poweredByHeader: false,
   env: {
     CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
