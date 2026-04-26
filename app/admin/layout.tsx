@@ -38,8 +38,8 @@ export default function AdminLayout({
   useEffect(() => {
     // Check authentication
     const admin = localStorage.getItem('admin');
-    if (!admin && pathname !== '/admin/login') {
-      router.push('/admin/login');
+    if (!admin && pathname !== '/nextgen-admin') {
+      router.push('/nextgen-admin');
     } else {
       setIsAuthenticated(true);
     }
@@ -114,16 +114,16 @@ export default function AdminLayout({
 
   const handleLogout = () => {
     localStorage.removeItem('admin');
-    router.push('/admin/login');
+    router.push('/nextgen-admin');
   };
 
   // Don't render if checking authentication or on login page
-  if (!isAuthenticated && pathname !== '/admin/login') {
+  if (!isAuthenticated && pathname !== '/nextgen-admin') {
     return null;
   }
 
   // Don't apply admin layout to login page
-  if (pathname === '/admin/login') {
+  if (pathname === '/nextgen-admin') {
     return <>{children}</>;
   }
 

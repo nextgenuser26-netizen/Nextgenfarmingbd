@@ -8,24 +8,19 @@ async function seedAdmin() {
     await mongoose.connect(MONGODB_URI);
     console.log('Connected to MongoDB');
 
-    // Check if admin already exists
-    const existingAdmin = await Admin.findOne({ username: 'admin' });
-    if (existingAdmin) {
-      console.log('Admin user already exists');
-      process.exit(0);
-    }
+    // Delete existing admin user if any
+    await Admin.deleteMany({});
 
-    // Create admin user
+    // Create admin user with new credentials
     const admin = await Admin.create({
-      username: 'admin',
-      password: 'admin123',
+      username: 'nextgenadmin',
+      password: 'nextgen@#$%&',
       email: 'admin@nextgenfarmingbd.com',
     });
 
     console.log('Admin user created successfully');
-    console.log('Username: admin');
-    console.log('Password: admin123');
-    console.log('Please change the password after first login');
+    console.log('Username: nextgenadmin');
+    console.log('Password: nextgen@#$%&');
 
     process.exit(0);
   } catch (error) {
