@@ -248,7 +248,7 @@ export default function Home() {
 
       {/* Trust Signals */}
       <section className="py-12 bg-[#f9faf5] border-y border-emerald-50">
-        <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto px-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div className="flex flex-col items-center text-center gap-4 group">
             <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-brand-green shadow-sm border border-emerald-50 group-hover:scale-110 transition-transform">
               <Truck size={24} />
