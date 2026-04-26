@@ -6,12 +6,13 @@ const MONGODB_URI = "mongodb://mkrabbanicse_db_user:nobinislam420%40%23%24@ac-ru
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await mongoose.connect(MONGODB_URI);
     
-    const landingPage = await LandingPage.findById(params.id);
+    const { id } = await params;
+    const landingPage = await LandingPage.findById(id);
     
     if (!landingPage) {
       return NextResponse.json({ error: 'Landing page not found' }, { status: 404 });
@@ -26,23 +27,24 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await mongoose.connect(MONGODB_URI);
     
+    const { id } = await params;
     const landingPageData = await request.json();
     
     // Set publishedAt if status is being changed to published
     if (landingPageData.status === 'published') {
-      const existing = await LandingPage.findById(params.id);
+      const existing = await LandingPage.findById(id);
       if (existing && existing.status !== 'published') {
         landingPageData.publishedAt = new Date();
       }
     }
     
     const landingPage = await LandingPage.findByIdAndUpdate(
-      params.id,
+      id,
       landingPageData,
       { new: true, runValidators: true }
     );
@@ -63,12 +65,13 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await mongoose.connect(MONGODB_URI);
     
-    const landingPage = await LandingPage.findByIdAndDelete(params.id);
+    const { id } = await params;
+    const landingPage = await LandingPage.findByIdAndDelete(id);
     
     if (!landingPage) {
       return NextResponse.json({ error: 'Landing page not found' }, { status: 404 });
