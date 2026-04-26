@@ -267,6 +267,9 @@ export default function AdminSettings() {
             <p className="text-sm text-gray-500 mb-4">
               This image will be displayed in the "অর্গানিক ফুড নিয়ে চিন্তিত?" section on the home page.
             </p>
+            <p className="text-xs text-gray-500 mb-4">
+              Recommended size: 1920x600px. Max file size: 5MB.
+            </p>
             <div className="space-y-4">
               {bannerPreview && (
                 <div className="relative w-full max-w-md h-48 border border-gray-300 rounded-lg overflow-hidden">
