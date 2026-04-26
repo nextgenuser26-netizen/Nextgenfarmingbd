@@ -11,13 +11,20 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '10');
     const offset = parseInt(searchParams.get('offset') || '0');
+    const status = searchParams.get('status');
 
-    const blogs = await Blog.find()
+    // Build query
+    const query: any = {};
+    if (status) {
+      query.status = status;
+    }
+
+    const blogs = await Blog.find(query)
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(offset);
 
-    const total = await Blog.countDocuments();
+    const total = await Blog.countDocuments(query);
 
     return NextResponse.json({ 
       blogs,

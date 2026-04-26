@@ -169,9 +169,14 @@ export default function AdminBlogs() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-2">
-                      <button className="text-green-600 hover:text-green-900">
+                      <Link
+                        href={`/blogs/${blog.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green-600 hover:text-green-900"
+                      >
                         <Eye className="w-5 h-5" />
-                      </button>
+                      </Link>
                       <Link
                         href={`/admin/blogs/${blog._id}/edit`}
                         className="text-blue-600 hover:text-blue-900"
