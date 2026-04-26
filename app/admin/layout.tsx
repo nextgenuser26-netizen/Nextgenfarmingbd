@@ -7,18 +7,19 @@ import {
   Package,
   FolderTree,
   ShoppingCart,
+  Users,
   FileText,
   Tag,
-  Image as ImageIcon,
-  Users,
+  ImageIcon,
+  Landmark,
+  Globe,
   MessageSquare,
+  Search,
+  BarChart3,
   Settings,
   LogOut,
   Menu,
   X,
-  Globe,
-  Landmark,
-  Search
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -107,6 +108,7 @@ export default function AdminLayout({
     { name: 'Ticker Messages', href: '/admin/ticker-messages', icon: Globe },
     { name: 'Messages', href: '/admin/messages', icon: MessageSquare },
     { name: 'SEO Management', href: '/admin/seo', icon: Search },
+    { name: 'SEO Report', href: '/admin/seo/report', icon: BarChart3 },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
   ];
 
