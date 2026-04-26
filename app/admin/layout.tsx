@@ -16,7 +16,8 @@ import {
   LogOut,
   Menu,
   X,
-  Globe
+  Globe,
+  Landmark
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -80,6 +81,7 @@ export default function AdminLayout({
     { name: 'Blogs', href: '/admin/blogs', icon: FileText },
     { name: 'Deals', href: '/admin/deals', icon: Tag },
     { name: 'Banners', href: '/admin/banners', icon: ImageIcon },
+    { name: 'Landing Pages', href: '/admin/landing-pages', icon: Landmark },
     { name: 'Ticker Messages', href: '/admin/ticker-messages', icon: Globe },
     { name: 'Messages', href: '/admin/messages', icon: MessageSquare },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
