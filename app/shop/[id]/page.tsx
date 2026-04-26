@@ -546,7 +546,7 @@ export default function SingleProductPage() {
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           
           {/* Product Gallery */}
-          <div className="lg:col-span-6 sticky top-24">
+          <div className="lg:col-span-6 lg:sticky lg:top-24">
             <div className="space-y-4">
                <motion.div 
                  ref={containerRef}
