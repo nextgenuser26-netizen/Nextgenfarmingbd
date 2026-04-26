@@ -102,6 +102,17 @@ export default function AdminOrders() {
       const data = await res.json();
       setSelectedOrder(data.order);
       setIsModalOpen(true);
+
+      // Mark order as viewed if it wasn't already
+      if (!data.order.viewedByAdmin) {
+        await fetch(`/api/orders?id=${orderId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ viewedByAdmin: true }),
+        });
+        // Trigger refresh of unread count
+        window.dispatchEvent(new CustomEvent('refreshUnreadOrderCount'));
+      }
     } catch (error) {
       console.error('Error fetching order details:', error);
     }
@@ -710,7 +721,14 @@ export default function AdminOrders() {
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-white">{order.orderNumber || order._id}</div>
+                    <div className="flex items-center gap-2">
+                      <div className="text-sm font-medium text-white">{order.orderNumber || order._id}</div>
+                      {!order.viewedByAdmin && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                          New
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-white">{order.customerName || 'N/A'}</div>

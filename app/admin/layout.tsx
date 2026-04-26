@@ -31,6 +31,7 @@ export default function AdminLayout({
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadOrderCount, setUnreadOrderCount] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -45,16 +46,22 @@ export default function AdminLayout({
     // Only fetch unread count if authenticated
     if (admin) {
       fetchUnreadCount();
+      fetchUnreadOrderCount();
       // Poll for new messages every 30 seconds
       const interval = setInterval(fetchUnreadCount, 30000);
+      const orderInterval = setInterval(fetchUnreadOrderCount, 30000);
 
       // Listen for custom event to refresh count
       const handleRefresh = () => fetchUnreadCount();
+      const handleOrderRefresh = () => fetchUnreadOrderCount();
       window.addEventListener('refreshUnreadCount', handleRefresh);
+      window.addEventListener('refreshUnreadOrderCount', handleOrderRefresh);
 
       return () => {
         clearInterval(interval);
+        clearInterval(orderInterval);
         window.removeEventListener('refreshUnreadCount', handleRefresh);
+        window.removeEventListener('refreshUnreadOrderCount', handleOrderRefresh);
       };
     }
   }, [pathname, router]);
@@ -70,6 +77,20 @@ export default function AdminLayout({
       setUnreadCount(data.count || 0);
     } catch (error) {
       console.error('Error fetching unread count:', error);
+    }
+  };
+
+  const fetchUnreadOrderCount = async () => {
+    try {
+      const res = await fetch('/api/orders/unread-count');
+      if (!res.ok) {
+        console.error('Failed to fetch unread order count:', res.status);
+        return;
+      }
+      const data = await res.json();
+      setUnreadOrderCount(data.count || 0);
+    } catch (error) {
+      console.error('Error fetching unread order count:', error);
     }
   };
 
@@ -133,6 +154,7 @@ export default function AdminLayout({
             {navigation.map((item) => {
               const isActive = pathname === item.href;
               const isMessages = item.name === 'Messages';
+              const isOrders = item.name === 'Orders';
               return (
                 <Link
                   key={item.name}
@@ -150,6 +172,11 @@ export default function AdminLayout({
                     {isMessages && unreadCount > 0 && (
                       <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                    {isOrders && unreadOrderCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        {unreadOrderCount > 9 ? '9+' : unreadOrderCount}
                       </span>
                     )}
                   </div>

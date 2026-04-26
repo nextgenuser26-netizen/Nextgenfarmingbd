@@ -31,6 +31,7 @@ export interface IOrder extends Document {
   paymentMethod: string;
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
   notes?: string;
+  viewedByAdmin: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -141,6 +142,11 @@ const OrderSchema: Schema = new Schema({
   },
   notes: {
     type: String,
+  },
+  viewedByAdmin: {
+    type: Boolean,
+    default: false,
+    index: true,
   },
 }, {
   timestamps: true,
