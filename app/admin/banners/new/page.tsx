@@ -260,6 +260,9 @@ export default function NewBanner() {
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Banner Image (Desktop) *
               </label>
+              <p className="text-xs text-gray-500 mb-2">
+                Recommended size: 1920x288px (16:9 aspect ratio). Max file size: 5MB.
+              </p>
               <input
                 type="file"
                 accept="image/jpeg,image/jpg,image/png,image/webp"
@@ -282,6 +285,9 @@ export default function NewBanner() {
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Banner Image (Mobile)
               </label>
+              <p className="text-xs text-gray-500 mb-2">
+                Recommended size: 768x160px (for mobile screens). Max file size: 5MB.
+              </p>
               <input
                 type="file"
                 accept="image/jpeg,image/jpg,image/png,image/webp"
