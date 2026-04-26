@@ -9,6 +9,7 @@ export interface IBlog extends Document {
   excerpt?: string;
   excerpt_en?: string;
   featuredImage?: string;
+  featuredImageAlt?: string;
   author: string;
   tags?: string[];
   category?: string;
@@ -56,6 +57,10 @@ const BlogSchema = new Schema<IBlog>(
     },
     featuredImage: {
       type: String
+    },
+    featuredImageAlt: {
+      type: String,
+      trim: true
     },
     author: {
       type: String,

@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import CartDrawer from '@/components/CartDrawer';
 import Favicon from '@/components/Favicon';
 import MaintenanceGuard from '@/components/MaintenanceGuard';
+import { getSEOForPage, generateMetadataFromSEO } from '@/lib/getSEO';
 
 const inter = Inter({
   subsets: ['latin'],

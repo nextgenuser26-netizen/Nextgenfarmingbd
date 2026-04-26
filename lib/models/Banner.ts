@@ -6,7 +6,9 @@ export interface IBanner extends Document {
   description?: string;
   description_en?: string;
   image: string;
+  imageAlt?: string;
   mobileImage?: string;
+  mobileImageAlt?: string;
   link?: string;
   position: 'home' | 'category' | 'product' | 'all' | 'hero-carousel' | 'hero-right-top' | 'hero-right-bottom' | 'featured-collections';
   order: number;
@@ -38,8 +40,16 @@ const BannerSchema = new Schema<IBanner>(
       type: String,
       required: true
     },
+    imageAlt: {
+      type: String,
+      trim: true
+    },
     mobileImage: {
       type: String
+    },
+    mobileImageAlt: {
+      type: String,
+      trim: true
     },
     link: {
       type: String

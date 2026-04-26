@@ -17,7 +17,8 @@ import {
   Menu,
   X,
   Globe,
-  Landmark
+  Landmark,
+  Search
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -84,6 +85,7 @@ export default function AdminLayout({
     { name: 'Landing Pages', href: '/admin/landing-pages', icon: Landmark },
     { name: 'Ticker Messages', href: '/admin/ticker-messages', icon: Globe },
     { name: 'Messages', href: '/admin/messages', icon: MessageSquare },
+    { name: 'SEO Management', href: '/admin/seo', icon: Search },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
   ];
 

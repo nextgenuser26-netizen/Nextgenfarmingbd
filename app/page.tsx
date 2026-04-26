@@ -8,6 +8,7 @@ import BannerCarousel from '@/components/BannerCarousel';
 import Image from 'next/image';
 import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
+import SEOMetadata from '@/components/SEOMetadata';
 import { Truck, ShieldCheck, RefreshCw, Headphones, Flame, Star, Send, PhoneCall, ArrowRight, Quote, Zap, Sparkles, ShoppingBag, Tag, Copy, Check } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
@@ -21,17 +22,19 @@ export default function Home() {
   const [settings, setSettings] = useState<any>(null);
   const [reviews, setReviews] = useState<any[]>([]);
   const [countdown, setCountdown] = useState({ hours: 12, minutes: 45, seconds: 30 });
+  const [seoData, setSeoData] = useState<any>(null);
 
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const [productsRes, categoriesRes, bannersRes, dealsRes, settingsRes, reviewsRes] = await Promise.all([
+        const [productsRes, categoriesRes, bannersRes, dealsRes, settingsRes, reviewsRes, seoRes] = await Promise.all([
           fetch('/api/products'),
           fetch('/api/categories'),
           fetch('/api/banners?isActive=true&position=featured-collections'),
           fetch('/api/deals?limit=10'),
           fetch('/api/settings'),
-          fetch('/api/reviews?limit=6')
+          fetch('/api/reviews?limit=6'),
+          fetch('/api/seo?pagePath=/')
         ]);
 
         const productsData = await productsRes.json();
@@ -40,11 +43,13 @@ export default function Home() {
         const dealsData = await dealsRes.json();
         const settingsData = await settingsRes.json();
         const reviewsData = await reviewsRes.json();
+        const seoDataArray = await seoRes.json();
 
         setProducts(productsData.products || []);
         setCategories(categoriesData.categories || []);
         setSettings(settingsData.settings);
         setReviews(reviewsData.reviews || []);
+        setSeoData(seoDataArray.length > 0 ? seoDataArray[0] : null);
         console.log('Settings loaded:', settingsData.settings);
         console.log('Banner image:', settingsData.settings?.bannerImage);
         console.log('Ticker messages:', settingsData.settings?.tickerMessages);
@@ -136,6 +141,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-brand-bg">
+      <SEOMetadata seoData={seoData} />
       <Header />
       
       {/* Latest Offer Ticker */}

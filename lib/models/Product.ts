@@ -6,8 +6,11 @@ export interface IProduct extends Document {
   price: number;
   oldPrice?: number;
   image?: string;
+  imageAlt?: string;
   images: string[];
+  imageAlts?: string[];
   galleryImages: string[];
+  galleryImageAlts?: string[];
   mainImageIndex: number;
   category: string;
   subcategory?: string;
@@ -56,6 +59,10 @@ const ProductSchema: Schema = new Schema({
   image: {
     type: String,
   },
+  imageAlt: {
+    type: String,
+    trim: true
+  },
   images: {
     type: [String],
     required: true,
@@ -66,6 +73,10 @@ const ProductSchema: Schema = new Schema({
       message: 'At least one image is required'
     }
   },
+  imageAlts: {
+    type: [String],
+    default: []
+  },
   galleryImages: {
     type: [String],
     default: [],
@@ -75,6 +86,10 @@ const ProductSchema: Schema = new Schema({
       },
       message: 'Maximum 2 gallery images allowed'
     }
+  },
+  galleryImageAlts: {
+    type: [String],
+    default: []
   },
   mainImageIndex: {
     type: Number,
