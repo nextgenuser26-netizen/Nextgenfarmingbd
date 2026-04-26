@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
     
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
+    const subcategory = searchParams.get('subcategory');
     const id = searchParams.get('id');
     const search = searchParams.get('search');
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
@@ -28,11 +29,15 @@ export async function GET(request: NextRequest) {
 
     // Build query
     let query: any = {};
-    
+
     if (category) {
       query.category = category;
     }
-    
+
+    if (subcategory) {
+      query.subcategory = subcategory;
+    }
+
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },

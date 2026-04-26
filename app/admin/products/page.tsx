@@ -6,10 +6,12 @@ import { Plus, Edit, Trash2, Search, ChevronLeft, ChevronRight } from 'lucide-re
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [subcategories, setSubcategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
   const itemsPerPage = 7;
@@ -17,19 +19,37 @@ export default function AdminProducts() {
   useEffect(() => {
     fetchCategories();
     fetchProducts();
-  }, [currentPage, selectedCategory, searchTerm]);
+  }, [currentPage, selectedCategory, selectedSubcategory, searchTerm]);
+
+  useEffect(() => {
+    if (selectedCategory && categories.length > 0) {
+      fetchSubcategories();
+    } else {
+      setSubcategories([]);
+      setSelectedSubcategory('');
+    }
+  }, [selectedCategory, categories]);
 
   const fetchCategories = async () => {
     try {
-      // Fetch unique categories from products instead of Categories collection
-      const res = await fetch('/api/products?limit=1000');
+      const res = await fetch('/api/categories');
       const data = await res.json();
-      const allProducts = data.products || [];
-      const uniqueCategories = [...new Set(allProducts.map((p: any) => p.category).filter(Boolean))] as string[];
-      console.log('Unique categories from products:', uniqueCategories);
-      setCategories(uniqueCategories);
+      setCategories(data.categories || []);
     } catch (error) {
       console.error('Error fetching categories:', error);
+    }
+  };
+
+  const fetchSubcategories = async () => {
+    try {
+      const selectedCat = categories.find((cat: any) => cat.name_en === selectedCategory);
+      if (selectedCat && selectedCat.subcategories) {
+        setSubcategories(selectedCat.subcategories);
+      } else {
+        setSubcategories([]);
+      }
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
     }
   };
 
@@ -38,18 +58,23 @@ export default function AdminProducts() {
       setLoading(true);
       const offset = (currentPage - 1) * itemsPerPage;
       let url = `/api/products?limit=${itemsPerPage}&offset=${offset}`;
-      
+
       if (selectedCategory) {
         url += `&category=${encodeURIComponent(selectedCategory)}`;
       }
-      
+
+      if (selectedSubcategory) {
+        url += `&subcategory=${encodeURIComponent(selectedSubcategory)}`;
+      }
+
       if (searchTerm) {
         url += `&search=${encodeURIComponent(searchTerm)}`;
       }
-      
+
       console.log('Fetching products with URL:', url);
       console.log('Selected category:', selectedCategory);
-      
+      console.log('Selected subcategory:', selectedSubcategory);
+
       const res = await fetch(url);
       const data = await res.json();
       console.log('Products data:', data);
@@ -69,7 +94,7 @@ export default function AdminProducts() {
       const res = await fetch(`/api/products/${id}`, {
         method: 'DELETE',
       });
-      
+
       if (res.ok) {
         fetchProducts();
       } else {
@@ -79,6 +104,17 @@ export default function AdminProducts() {
       console.error('Error deleting product:', error);
       alert('Failed to delete product');
     }
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setSelectedSubcategory('');
+    setCurrentPage(1);
+  };
+
+  const handleSubcategoryChange = (subcategory: string) => {
+    setSelectedSubcategory(subcategory);
+    setCurrentPage(1);
   };
 
   const filteredProducts = products;
@@ -120,15 +156,23 @@ export default function AdminProducts() {
         </div>
         <select
           value={selectedCategory}
-          onChange={(e) => {
-            setSelectedCategory(e.target.value);
-            setCurrentPage(1);
-          }}
+          onChange={(e) => handleCategoryChange(e.target.value)}
           className="px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
         >
           <option value="">All Categories</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
+          {categories.map((cat: any) => (
+            <option key={cat._id} value={cat.name_en}>{cat.icon} {cat.name} ({cat.name_en})</option>
+          ))}
+        </select>
+        <select
+          value={selectedSubcategory}
+          onChange={(e) => handleSubcategoryChange(e.target.value)}
+          className="px-4 py-2 border border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-white bg-gray-800"
+          disabled={!selectedCategory || subcategories.length === 0}
+        >
+          <option value="">All Subcategories</option>
+          {subcategories.map((sub) => (
+            <option key={sub} value={sub}>{sub}</option>
           ))}
         </select>
       </div>
@@ -150,6 +194,9 @@ export default function AdminProducts() {
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Category
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Subcategory
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Stock
@@ -185,6 +232,15 @@ export default function AdminProducts() {
                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                       {product.category}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {product.subcategory ? (
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                        {product.subcategory}
+                      </span>
+                    ) : (
+                      <span className="text-gray-500">-</span>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`text-sm ${product.inStock ? 'text-green-600' : 'text-red-600'}`}>

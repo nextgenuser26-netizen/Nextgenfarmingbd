@@ -10,6 +10,7 @@ export interface IProduct extends Document {
   galleryImages: string[];
   mainImageIndex: number;
   category: string;
+  subcategory?: string;
   rating: number;
   reviews: number;
   weight?: string;
@@ -83,6 +84,10 @@ const ProductSchema: Schema = new Schema({
   category: {
     type: String,
     required: true,
+    index: true,
+  },
+  subcategory: {
+    type: String,
     index: true,
   },
   rating: {

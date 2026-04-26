@@ -16,6 +16,7 @@ function ShopContent() {
   const searchParam = searchParams.get('search') || '';
 
   const [selectedCategory, setSelectedCategory] = useState(categoryParam);
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [sortBy, setSortBy] = useState('default');
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [maxPrice, setMaxPrice] = useState(6000);
@@ -78,6 +79,11 @@ function ShopContent() {
       result = result.filter((p: any) => p.category === selectedCategory);
     }
 
+    // Subcategory Filter
+    if (selectedSubcategory) {
+      result = result.filter((p: any) => p.subcategory === selectedSubcategory);
+    }
+
     // Search Filter
     if (searchQuery) {
       result = result.filter((p: any) =>
@@ -105,7 +111,7 @@ function ShopContent() {
     }
 
     return result;
-  }, [selectedCategory, sortBy, maxPrice, searchQuery, products]);
+  }, [selectedCategory, selectedSubcategory, sortBy, maxPrice, searchQuery, products]);
 
   return (
     <main className="min-h-screen bg-brand-bg pb-20">
@@ -206,8 +212,11 @@ function ShopContent() {
                   {categories.length > 0 ? categories.map((cat: any) => (
                     <div key={cat._id} className="space-y-1">
                       <button
-                        onClick={() => setSelectedCategory(cat.name_en)}
-                        className={`w-full text-left px-5 py-3 rounded-2xl font-bold text-sm transition-all flex items-center justify-between group ${selectedCategory === cat.name_en ? 'bg-brand-green text-white shadow-xl shadow-brand-green/20 scale-[1.02]' : 'bg-white text-slate-500 hover:bg-emerald-50 border border-emerald-50 hover:border-emerald-100 hover:text-brand-green-dark'}`}
+                        onClick={() => {
+                          setSelectedCategory(cat.name_en);
+                          setSelectedSubcategory('');
+                        }}
+                        className={`w-full text-left px-5 py-3 rounded-2xl font-bold text-sm transition-all flex items-center justify-between group ${selectedCategory === cat.name_en && !selectedSubcategory ? 'bg-brand-green text-white shadow-xl shadow-brand-green/20 scale-[1.02]' : 'bg-white text-slate-500 hover:bg-emerald-50 border border-emerald-50 hover:border-emerald-100 hover:text-brand-green-dark'}`}
                       >
                          <div className="flex items-center gap-3">
                            <span>{cat.icon}</span>
@@ -230,12 +239,18 @@ function ShopContent() {
                             {cat.subcategories?.map((sub: string, index: number) => (
                               <button
                                 key={index}
-                                className="w-full text-left px-3 py-2 text-xs text-slate-400 hover:text-brand-green font-bold transition-colors flex items-center justify-between group"
+                                onClick={() => setSelectedSubcategory(sub)}
+                                className={`w-full text-left px-3 py-2 text-xs font-bold transition-colors flex items-center justify-between group ${selectedSubcategory === sub ? 'text-brand-green' : 'text-slate-400 hover:text-brand-green'}`}
                               >
                                 <span className="flex items-center gap-2">
-                                  <div className="w-1.5 h-1.5 bg-slate-200 rounded-full group-hover:bg-brand-green group-hover:scale-125 transition-all" />
+                                  <div className={`w-1.5 h-1.5 rounded-full group-hover:scale-125 transition-all ${selectedSubcategory === sub ? 'bg-brand-green' : 'bg-slate-200 group-hover:bg-brand-green'}`} />
                                   {sub}
                                 </span>
+                                {selectedSubcategory === sub && (
+                                  <span className="text-[10px] bg-brand-green/10 text-brand-green px-2 py-0.5 rounded-full">
+                                    {products.filter((p: any) => p.subcategory === sub).length}
+                                  </span>
+                                )}
                               </button>
                             ))}
                           </motion.div>
@@ -367,6 +382,7 @@ function ShopContent() {
                 <button 
                   onClick={() => {
                     setSelectedCategory('All');
+                    setSelectedSubcategory('');
                     setMaxPrice(6000);
                     setSearchQuery('');
                   }}
