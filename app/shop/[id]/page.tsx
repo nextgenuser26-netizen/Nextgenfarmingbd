@@ -20,7 +20,10 @@ import {
   AlertCircle,
   Edit2,
   Trash2,
-  X
+  X,
+  Facebook,
+  Twitter,
+  MessageCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
@@ -347,6 +350,7 @@ export default function SingleProductPage() {
   const [zoomOrigin, setZoomOrigin] = useState('center');
   const [isZoomed, setIsZoomed] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const { addToCart, setIsDrawerOpen } = useCart();
 
@@ -508,6 +512,80 @@ export default function SingleProductPage() {
     });
 
     router.push('/checkout');
+  };
+
+  const handleShare = async (platform?: string) => {
+    if (!product) return;
+    
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+    const shareText = `${product.name} - Check out this amazing product!`;
+    
+    if (platform === 'copy') {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success('লিঙ্ক কপি হয়েছে!', {
+          style: {
+            borderRadius: '1.5rem',
+            background: '#064e3b',
+            color: '#fff',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            padding: '12px 24px'
+          },
+        });
+        setShowShareMenu(false);
+      } catch (error) {
+        toast.error('লিঙ্ক কপি করতে ব্যর্থ হয়েছে', {
+          style: {
+            borderRadius: '1.5rem',
+            background: '#dc2626',
+            color: '#fff',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            padding: '12px 24px'
+          },
+        });
+      }
+      return;
+    }
+    
+    if (platform === 'facebook') {
+      const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+      window.open(fbUrl, '_blank', 'width=600,height=400');
+      setShowShareMenu(false);
+      return;
+    }
+    
+    if (platform === 'twitter') {
+      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+      window.open(twitterUrl, '_blank', 'width=600,height=400');
+      setShowShareMenu(false);
+      return;
+    }
+    
+    if (platform === 'whatsapp') {
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+      window.open(whatsappUrl, '_blank');
+      setShowShareMenu(false);
+      return;
+    }
+    
+    // Native share for mobile devices
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: product.name,
+          text: shareText,
+          url: shareUrl,
+        });
+        setShowShareMenu(false);
+      } catch (error) {
+        console.log('Share canceled or failed:', error);
+      }
+    } else {
+      // Fallback to copy link
+      handleShare('copy');
+    }
   };
 
   if (!product) {
@@ -710,10 +788,59 @@ export default function SingleProductPage() {
             </div>
 
             {/* Social Share */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 relative">
                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Share this:</span>
                <div className="flex gap-2">
-                  <button className="p-2.5 rounded-xl bg-white border border-slate-50 text-slate-400 hover:text-brand-green transition-all shadow-sm"><Share2 size={16} /></button>
+                  <button 
+                    onClick={() => handleShare()}
+                    className="p-2.5 rounded-xl bg-white border border-slate-50 text-slate-400 hover:text-brand-green transition-all shadow-sm relative"
+                  >
+                    <Share2 size={16} />
+                  </button>
+                  
+                  {/* Share Menu */}
+                  <AnimatePresence>
+                    {showShareMenu && (
+                      <>
+                        <div className="fixed inset-0 z-10" onClick={() => setShowShareMenu(false)} />
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          className="absolute left-0 top-full mt-2 bg-white rounded-2xl shadow-2xl border border-emerald-50 py-2 z-20 overflow-hidden min-w-[200px]"
+                        >
+                          <button
+                            onClick={() => handleShare('copy')}
+                            className="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-50 flex items-center gap-3 transition-colors"
+                          >
+                            <Share2 size={16} className="text-brand-green" />
+                            লিঙ্ক কপি করুন
+                          </button>
+                          <button
+                            onClick={() => handleShare('facebook')}
+                            className="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-50 flex items-center gap-3 transition-colors"
+                          >
+                            <Facebook size={16} className="text-blue-600" />
+                            Facebook
+                          </button>
+                          <button
+                            onClick={() => handleShare('twitter')}
+                            className="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-50 flex items-center gap-3 transition-colors"
+                          >
+                            <Twitter size={16} className="text-sky-500" />
+                            Twitter
+                          </button>
+                          <button
+                            onClick={() => handleShare('whatsapp')}
+                            className="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-50 flex items-center gap-3 transition-colors"
+                          >
+                            <MessageCircle size={16} className="text-green-500" />
+                            WhatsApp
+                          </button>
+                        </motion.div>
+                      </>
+                    )}
+                  </AnimatePresence>
                </div>
             </div>
           </div>

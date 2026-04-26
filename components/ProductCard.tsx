@@ -92,17 +92,19 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
         
-        <div className="flex items-center justify-between pt-2">
-          <div className="flex flex-col">
-          {product.oldPrice && (
-            <span className="text-slate-400 line-through text-[10px]">৳{product.oldPrice}</span>
-          )}
-          <span className="text-brand-green-dark font-black text-lg italic">৳{product.price}</span>
+        <div className="pt-2 space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col">
+            {product.oldPrice && (
+              <span className="text-slate-400 line-through text-[10px]">৳{product.oldPrice}</span>
+            )}
+            <span className="text-brand-green-dark font-black text-lg italic">৳{product.price}</span>
+            </div>
           </div>
           
           <button 
             onClick={handleAddToCart}
-            className="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-4 py-2 rounded-xl border border-emerald-200 uppercase hover:bg-brand-green hover:text-white transition-all"
+            className="w-full bg-emerald-50 text-emerald-800 text-[10px] sm:text-[11px] font-bold px-4 py-2.5 rounded-xl border border-emerald-200 uppercase hover:bg-brand-green hover:text-white transition-all"
           >
             কার্টে যোগ করুন
           </button>
