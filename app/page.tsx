@@ -464,9 +464,9 @@ export default function Home() {
               <div className="bg-[#f0ede4] p-8 rounded-none space-y-6">
                 <h4 className="text-lg font-black text-slate-700 italic border-b border-slate-200 pb-2">জনপ্রিয় ক্যাটাগরি</h4>
                 <div className="space-y-3">
-                  {['মধু', 'ঘি', 'তেল', 'খেজুর'].map((item, i) => (
-                    <Link key={i} href={`/shop?search=${encodeURIComponent(item)}`} className="flex items-center justify-between group">
-                      <span className="text-sm font-bold text-slate-600 group-hover:text-brand-green transition-colors">{item}</span>
+                  {categories.slice(0, 4).map((cat: any, i: number) => (
+                    <Link key={cat._id || i} href={`/shop?category=${encodeURIComponent(cat.name_en || cat.name)}`} className="flex items-center justify-between group">
+                      <span className="text-sm font-bold text-slate-600 group-hover:text-brand-green transition-colors">{cat.name || cat.name_en}</span>
                       <ArrowRight size={14} className="text-slate-400 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
                     </Link>
                   ))}
