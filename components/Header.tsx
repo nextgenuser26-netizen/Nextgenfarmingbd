@@ -118,11 +118,13 @@ export default function Header() {
         <Link href="/" className="flex-shrink-0 group">
           <div className="flex items-center gap-2">
             {settings?.logo ? (
-              <img
-                src={settings.logo}
-                alt={settings.siteName || 'Logo'}
-                className="w-8 h-8 md:w-10 md:h-10 object-contain rounded-[22px]"
-              />
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden">
+                <img
+                  src={settings.logo}
+                  alt={settings.siteName || 'Logo'}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             ) : (
               <div className="w-8 h-8 md:w-10 md:h-10 bg-brand-green rounded-full flex items-center justify-center text-white">
                 <div className="w-5 h-5 md:w-6 md:h-6 border-2 border-white rounded-sm transform rotate-45 group-hover:rotate-0 transition-transform duration-300"></div>
