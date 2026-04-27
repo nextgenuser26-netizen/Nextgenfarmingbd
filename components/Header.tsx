@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Search, ShoppingCart, User, Menu, Phone, X, ChevronDown, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { categories } from '@/lib/data';
 import Image from 'next/image';
 import { useCart } from '@/lib/CartContext';
 
@@ -16,6 +15,7 @@ export default function Header() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [settings, setSettings] = useState<any>(null);
   const [products, setProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
@@ -23,6 +23,7 @@ export default function Header() {
   useEffect(() => {
     fetchSettings();
     fetchProducts();
+    fetchCategories();
   }, []);
 
   const fetchSettings = async () => {
@@ -42,6 +43,16 @@ export default function Header() {
       setProducts(data.products || []);
     } catch (error) {
       console.error('Error fetching products:', error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch('/api/categories');
+      const data = await res.json();
+      setCategories(data.categories || []);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
     }
   };
 
@@ -352,16 +363,16 @@ export default function Header() {
                 <div className="px-4 mb-4 border-t border-gray-100 pt-4">
                   <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">ক্যাটাগরি</h3>
                   <div className="space-y-1">
-                    {categories.map((cat) => (
-                      <Link 
-                        key={cat.id} 
-                        href={`/shop?category=${encodeURIComponent(cat.name_en)}`}
+                    {categories.map((cat: any) => (
+                      <Link
+                        key={cat._id}
+                        href={`/shop?category=${encodeURIComponent(cat.name_en || cat.name)}`}
                         className="flex items-center justify-between p-3 hover:bg-gray-100 rounded-lg text-sm font-medium group"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <div className="flex items-center gap-3">
-                          <span>{cat.icon}</span>
-                          <span>{cat.name}</span>
+                          <span>{cat.icon || '📦'}</span>
+                          <span>{cat.name || cat.name_en}</span>
                         </div>
                         <ChevronDown size={14} className="-rotate-90 text-gray-300 group-hover:text-brand-green" />
                       </Link>
