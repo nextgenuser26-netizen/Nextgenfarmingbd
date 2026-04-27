@@ -16,6 +16,7 @@ import {
   MessageSquare,
   Search,
   BarChart3,
+  Mail,
   Settings,
   LogOut,
   Menu,
@@ -33,6 +34,7 @@ export default function AdminLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadOrderCount, setUnreadOrderCount] = useState(0);
+  const [unreadNewsletterCount, setUnreadNewsletterCount] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -48,21 +50,27 @@ export default function AdminLayout({
     if (admin) {
       fetchUnreadCount();
       fetchUnreadOrderCount();
+      fetchUnreadNewsletterCount();
       // Poll for new messages every 30 seconds
       const interval = setInterval(fetchUnreadCount, 30000);
       const orderInterval = setInterval(fetchUnreadOrderCount, 30000);
+      const newsletterInterval = setInterval(fetchUnreadNewsletterCount, 30000);
 
       // Listen for custom event to refresh count
       const handleRefresh = () => fetchUnreadCount();
       const handleOrderRefresh = () => fetchUnreadOrderCount();
+      const handleNewsletterRefresh = () => fetchUnreadNewsletterCount();
       window.addEventListener('refreshUnreadCount', handleRefresh);
       window.addEventListener('refreshUnreadOrderCount', handleOrderRefresh);
+      window.addEventListener('refreshUnreadNewsletterCount', handleNewsletterRefresh);
 
       return () => {
         clearInterval(interval);
         clearInterval(orderInterval);
+        clearInterval(newsletterInterval);
         window.removeEventListener('refreshUnreadCount', handleRefresh);
         window.removeEventListener('refreshUnreadOrderCount', handleOrderRefresh);
+        window.removeEventListener('refreshUnreadNewsletterCount', handleNewsletterRefresh);
       };
     }
   }, [pathname, router]);
@@ -95,6 +103,20 @@ export default function AdminLayout({
     }
   };
 
+  const fetchUnreadNewsletterCount = async () => {
+    try {
+      const res = await fetch('/api/newsletter/unread-count');
+      if (!res.ok) {
+        console.error('Failed to fetch unread newsletter count:', res.status);
+        return;
+      }
+      const data = await res.json();
+      setUnreadNewsletterCount(data.count || 0);
+    } catch (error) {
+      console.error('Error fetching unread newsletter count:', error);
+    }
+  };
+
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Products', href: '/admin/products', icon: Package },
@@ -107,6 +129,7 @@ export default function AdminLayout({
     { name: 'Landing Pages', href: '/admin/landing-pages', icon: Landmark },
     { name: 'Ticker Messages', href: '/admin/ticker-messages', icon: Globe },
     { name: 'Messages', href: '/admin/messages', icon: MessageSquare },
+    { name: 'Newsletter', href: '/admin/newsletter', icon: Mail },
     { name: 'SEO Management', href: '/admin/seo', icon: Search },
     { name: 'SEO Report', href: '/admin/seo/report', icon: BarChart3 },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
@@ -157,6 +180,7 @@ export default function AdminLayout({
               const isActive = pathname === item.href;
               const isMessages = item.name === 'Messages';
               const isOrders = item.name === 'Orders';
+              const isNewsletter = item.name === 'Newsletter';
               return (
                 <Link
                   key={item.name}
@@ -179,6 +203,11 @@ export default function AdminLayout({
                     {isOrders && unreadOrderCount > 0 && (
                       <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {unreadOrderCount > 9 ? '9+' : unreadOrderCount}
+                      </span>
+                    )}
+                    {isNewsletter && unreadNewsletterCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        {unreadNewsletterCount > 9 ? '9+' : unreadNewsletterCount}
                       </span>
                     )}
                   </div>

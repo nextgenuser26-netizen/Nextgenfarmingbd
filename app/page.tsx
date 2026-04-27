@@ -23,6 +23,8 @@ export default function Home() {
   const [reviews, setReviews] = useState<any[]>([]);
   const [countdown, setCountdown] = useState({ hours: 12, minutes: 45, seconds: 30 });
   const [seoData, setSeoData] = useState<any>(null);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -109,10 +111,40 @@ export default function Home() {
     return num.toString().split('').map(d => bengaliNums[parseInt(d)]).join('');
   };
 
-  const handleCopyCoupon = (code: string) => {
-    navigator.clipboard.writeText(code);
-    setCopiedCoupon(code);
+  const handleCopyCoupon = (coupon: string) => {
+    navigator.clipboard.writeText(coupon);
+    setCopiedCoupon(coupon);
     setTimeout(() => setCopiedCoupon(null), 2000);
+  };
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+
+    setNewsletterStatus('loading');
+
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: newsletterEmail }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setNewsletterStatus('success');
+        setNewsletterEmail('');
+        setTimeout(() => setNewsletterStatus('idle'), 3000);
+      } else {
+        setNewsletterStatus('error');
+        setTimeout(() => setNewsletterStatus('idle'), 3000);
+      }
+    } catch (error) {
+      console.error('Error subscribing to newsletter:', error);
+      setNewsletterStatus('error');
+      setTimeout(() => setNewsletterStatus('idle'), 3000);
+    }
   };
 
   const handleUseCoupon = (code: string) => {
@@ -427,16 +459,26 @@ export default function Home() {
                     <h4 className="text-xl font-black text-brand-green-dark italic">Newsletter</h4>
                     <p className="text-slate-500 text-xs mt-1 italic font-bold">নতুন অফার পেতে সাবস্ক্রাইব করুন</p>
                   </div>
-                  <div className="space-y-4">
-                    <input 
-                      type="email" 
-                      placeholder="আপনার ইমেইল" 
+                  <form onSubmit={handleNewsletterSubmit} className="space-y-4">
+                    <input
+                      type="email"
+                      placeholder="আপনার ইমেইল"
+                      value={newsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
                       className="w-full bg-[#f9fafb] border-none rounded-none py-3 px-5 text-xs focus:ring-2 focus:ring-brand-green outline-none"
+                      required
                     />
-                    <button className="w-full bg-brand-green text-white py-3 rounded-none font-black text-sm shadow-lg shadow-brand-green/20 hover:bg-brand-green-dark transition-all">
-                      জয়েন করুন
+                    <button
+                      type="submit"
+                      disabled={newsletterStatus === 'loading'}
+                      className="w-full bg-brand-green text-white py-3 rounded-none font-black text-sm shadow-lg shadow-brand-green/20 hover:bg-brand-green-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {newsletterStatus === 'loading' ? 'লোড হচ্ছে...' :
+                       newsletterStatus === 'success' ? 'সফল!' :
+                       newsletterStatus === 'error' ? 'ব্যর্থ' :
+                       'জয়েন করুন'}
                     </button>
-                  </div>
+                  </form>
                 </div>
                 {/* Decorative blob */}
                 <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-emerald-50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
