@@ -237,6 +237,8 @@ export default function EditProduct() {
     setSaving(true);
 
     console.log('Submitting form data:', formData);
+    console.log('Description (Bangla):', formData.description);
+    console.log('Description (English):', formData.description_en);
     console.log('Has variants:', formData.hasVariants);
     console.log('Variants:', formData.variants);
     console.log('Images in form data:', formData.images);
@@ -269,11 +271,11 @@ export default function EditProduct() {
         body: JSON.stringify({
           ...formData,
           price: finalPrice,
-          oldPrice: finalOldPrice,
+          oldPrice: finalOldPrice === undefined ? null : finalOldPrice,
           variants: formData.hasVariants ? formData.variants.map(v => ({
             ...v,
             price: parseFloat(v.price),
-            oldPrice: v.oldPrice ? parseFloat(v.oldPrice) : undefined
+            oldPrice: v.oldPrice ? parseFloat(v.oldPrice) : null
           })) : [],
         }),
       });
@@ -383,7 +385,7 @@ export default function EditProduct() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Old Price (৳)
+                Old Price (৳) (optional)
               </label>
               <input
                 type="number"
@@ -524,7 +526,7 @@ export default function EditProduct() {
 
                       <div>
                         <label className="block text-xs font-medium text-gray-700 mb-1">
-                          Old Price (৳)
+                          Old Price (৳) (optional)
                         </label>
                         <input
                           type="number"

@@ -341,7 +341,7 @@ export default function NewProduct() {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Old Price (৳)
+                Old Price (৳) (optional)
               </label>
               <input
                 type="number"
@@ -482,7 +482,7 @@ export default function NewProduct() {
 
                       <div>
                         <label className="block text-xs font-medium text-gray-300 mb-1">
-                          Old Price (৳)
+                          Old Price (৳) (optional)
                         </label>
                         <input
                           type="number"

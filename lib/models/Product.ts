@@ -19,6 +19,7 @@ export interface IProduct extends Document {
   weight?: string;
   inStock: boolean;
   description?: string;
+  description_en?: string;
   details?: string;
   tags?: string[];
   variants?: {
@@ -124,6 +125,9 @@ const ProductSchema: Schema = new Schema({
     default: true,
   },
   description: {
+    type: String,
+  },
+  description_en: {
     type: String,
   },
   details: {

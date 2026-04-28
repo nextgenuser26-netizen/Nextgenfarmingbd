@@ -12,6 +12,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const updateData = await request.json();
 
     console.log('Update data received:', updateData);
+    console.log('Description (Bangla):', updateData.description);
+    console.log('Description (English):', updateData.description_en);
 
     // Check if product exists
     const product = await Product.findById(id);
@@ -54,11 +56,28 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       }
     }
 
+    // Handle null values to explicitly unset fields
+    const updateOperation: any = { ...updateData, updatedAt: new Date() };
+    if (updateData.oldPrice === null) {
+      updateOperation.$unset = { oldPrice: 1 };
+      delete updateOperation.oldPrice;
+    }
+    if (updateData.variants) {
+      updateOperation.variants = updateData.variants.map((v: any) => ({
+        ...v,
+        oldPrice: v.oldPrice === null ? undefined : v.oldPrice
+      }));
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
-      { ...updateData, updatedAt: new Date() },
+      updateOperation,
       { new: true, runValidators: true }
     );
+
+    console.log('Updated product:', updatedProduct);
+    console.log('Updated Description (Bangla):', updatedProduct?.description);
+    console.log('Updated Description (English):', updatedProduct?.description_en);
 
     return NextResponse.json(updatedProduct);
   } catch (error) {
