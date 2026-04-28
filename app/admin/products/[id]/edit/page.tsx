@@ -520,7 +520,7 @@ export default function EditProduct() {
                           step="0.01"
                           value={variant.price}
                           onChange={(e) => updateVariant(index, 'price', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent placeholder-gray-400"
                         />
                       </div>
 
@@ -533,7 +533,7 @@ export default function EditProduct() {
                           step="0.01"
                           value={variant.oldPrice}
                           onChange={(e) => updateVariant(index, 'oldPrice', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent placeholder-gray-400"
                         />
                       </div>
                     </div>
