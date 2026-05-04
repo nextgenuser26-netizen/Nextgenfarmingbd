@@ -842,12 +842,12 @@ export default function AdminOrders() {
               {/* Order Info */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-400">Order Number</p>
-                  <p className="font-semibold">{selectedOrder.orderNumber || selectedOrder._id}</p>
+                  <p className="text-sm text-white">Order Number</p>
+                  <p className="font-semibold text-white">{selectedOrder.orderNumber || selectedOrder._id}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Order Date</p>
-                  <p className="font-semibold">{new Date(selectedOrder.createdAt).toLocaleString()}</p>
+                  <p className="text-sm text-white">Order Date</p>
+                  <p className="font-semibold text-white">{new Date(selectedOrder.createdAt).toLocaleString()}</p>
                 </div>
               </div>
 
@@ -860,15 +860,15 @@ export default function AdminOrders() {
                   <div className="flex items-center gap-2">
                     <Mail className="w-4 h-4 text-gray-400" />
                     <div>
-                      <p className="text-sm text-gray-400">Name</p>
-                      <p className="font-medium">{selectedOrder.customerName}</p>
+                      <p className="text-sm text-white">Name</p>
+                      <p className="font-medium text-white">{selectedOrder.customerName}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-gray-400" />
+                    <Phone className="w-4 h-4 text-white" />
                     <div>
-                      <p className="text-sm text-gray-400">Phone</p>
-                      <p className="font-medium">{selectedOrder.customerPhone}</p>
+                      <p className="text-sm text-white">Phone</p>
+                      <p className="font-medium text-white">{selectedOrder.customerPhone}</p>
                     </div>
                   </div>
                   {selectedOrder.customerEmail && (
