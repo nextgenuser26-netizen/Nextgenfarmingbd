@@ -440,7 +440,6 @@ export default function AdminOrders() {
           <div class="section">
             <h2>Payment Information</h2>
             <div class="info-row"><span class="label">Payment Method:</span> ${selectedOrder.paymentMethod}</div>
-            <div class="info-row"><span class="label">Payment Status:</span> ${selectedOrder.paymentStatus}</div>
           </div>
 
           ${selectedOrder.notes ? `
