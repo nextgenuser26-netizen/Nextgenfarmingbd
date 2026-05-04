@@ -18,6 +18,8 @@ export default function AdminOrders() {
   const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
   const [batchDeleting, setBatchDeleting] = useState(false);
   const [settings, setSettings] = useState<any>(null);
+  const [updatingPaymentStatus, setUpdatingPaymentStatus] = useState(false);
+  const [paymentStatusError, setPaymentStatusError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOrders();
@@ -84,10 +86,12 @@ export default function AdminOrders() {
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
       case 'paid':
+      case 'received':
         return 'bg-green-100 text-green-800';
       case 'pending':
         return 'bg-yellow-100 text-yellow-800';
       case 'failed':
+      case 'cancel':
         return 'bg-red-100 text-red-800';
       case 'refunded':
         return 'bg-gray-100 text-gray-800';
@@ -123,12 +127,16 @@ export default function AdminOrders() {
 
     setUpdatingStatus(true);
     try {
+      const payload: any = { status: newStatus };
+      if (newStatus !== 'pending') {
+        payload.deliveryDate = new Date().toISOString();
+      }
       const res = await fetch(`/api/orders?id=${selectedOrder._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
@@ -140,6 +148,36 @@ export default function AdminOrders() {
       console.error('Error updating order status:', error);
     } finally {
       setUpdatingStatus(false);
+    }
+  };
+
+  const handlePaymentStatusUpdate = async (newPaymentStatus: string) => {
+    if (!selectedOrder) return;
+
+    setPaymentStatusError(null);
+    setUpdatingPaymentStatus(true);
+    try {
+      const res = await fetch(`/api/orders?id=${selectedOrder._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ paymentStatus: newPaymentStatus }),
+      });
+
+      if (res.ok) {
+        const updatedOrder = await res.json();
+        setSelectedOrder(updatedOrder);
+        fetchOrders();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setPaymentStatusError(data.error || `Failed to update: ${res.status}`);
+      }
+    } catch (error) {
+      console.error('Error updating payment status:', error);
+      setPaymentStatusError('Network error. Please try again.');
+    } finally {
+      setUpdatingPaymentStatus(false);
     }
   };
 
@@ -339,6 +377,8 @@ export default function AdminOrders() {
           <div class="header">
             <h1>Order Details</h1>
             <p>Order Number: ${selectedOrder.orderNumber || selectedOrder._id}</p>
+            <p>Order Date: ${new Date(selectedOrder.createdAt).toLocaleString()}</p>
+            ${selectedOrder.deliveryDate ? `<p>Delivery Date: ${new Date(selectedOrder.deliveryDate).toLocaleString()}</p>` : ''}
           </div>
 
           <div class="section">
@@ -704,6 +744,9 @@ export default function AdminOrders() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Date
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  Delivery Date
+                </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Actions
                 </th>
@@ -749,6 +792,25 @@ export default function AdminOrders() {
                     <div className="text-sm text-white">
                       {new Date(order.createdAt).toLocaleDateString()}
                     </div>
+                    <div className="text-xs text-gray-400 mt-0.5">
+                      {new Date(order.createdAt).toLocaleTimeString()}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {order.status === 'pending' ? (
+                      <span className="text-sm text-gray-500">Pending</span>
+                    ) : order.deliveryDate ? (
+                      <>
+                        <div className="text-sm text-green-400">
+                          {new Date(order.deliveryDate).toLocaleDateString()}
+                        </div>
+                        <div className="text-xs text-green-500 mt-0.5">
+                          {new Date(order.deliveryDate).toLocaleTimeString()}
+                        </div>
+                      </>
+                    ) : (
+                      <span className="text-sm text-gray-500">Pending</span>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
@@ -840,7 +902,7 @@ export default function AdminOrders() {
 
             <div className="p-6 space-y-6">
               {/* Order Info */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <p className="text-sm text-white">Order Number</p>
                   <p className="font-semibold text-white">{selectedOrder.orderNumber || selectedOrder._id}</p>
@@ -848,6 +910,16 @@ export default function AdminOrders() {
                 <div>
                   <p className="text-sm text-white">Order Date</p>
                   <p className="font-semibold text-white">{new Date(selectedOrder.createdAt).toLocaleString()}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-white">Delivery Date</p>
+                  <p className={`font-semibold ${selectedOrder.status === 'pending' ? 'text-gray-400' : 'text-green-400'}`}>
+                    {selectedOrder.status === 'pending'
+                      ? 'Pending'
+                      : (selectedOrder.deliveryDate
+                        ? new Date(selectedOrder.deliveryDate).toLocaleString()
+                        : 'Pending')}
+                  </p>
                 </div>
               </div>
 
@@ -978,9 +1050,22 @@ export default function AdminOrders() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Payment Status</p>
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPaymentStatusColor(selectedOrder.paymentStatus)}`}>
-                      {selectedOrder.paymentStatus}
-                    </span>
+                    <select
+                      value={selectedOrder.paymentStatus || ''}
+                      onChange={(e) => handlePaymentStatusUpdate(e.target.value)}
+                      disabled={updatingPaymentStatus}
+                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md bg-gray-800 text-white"
+                    >
+                      {['pending', 'received', 'cancel'].includes(selectedOrder.paymentStatus) ? null : (
+                        <option value={selectedOrder.paymentStatus} disabled>{selectedOrder.paymentStatus}</option>
+                      )}
+                      <option value="pending">pending</option>
+                      <option value="received">received</option>
+                      <option value="cancel">cancel</option>
+                    </select>
+                    {paymentStatusError && (
+                      <p className="mt-1 text-xs text-red-400">{paymentStatusError}</p>
+                    )}
                   </div>
                 </div>
               </div>

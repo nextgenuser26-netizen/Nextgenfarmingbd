@@ -137,8 +137,12 @@ export async function PUT(request: NextRequest) {
     }
     
     return NextResponse.json(order);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating order:', error);
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((e: any) => e.message).join(', ');
+      return NextResponse.json({ error: messages }, { status: 400 });
+    }
     return NextResponse.json({ error: 'Failed to update order' }, { status: 500 });
   }
 }

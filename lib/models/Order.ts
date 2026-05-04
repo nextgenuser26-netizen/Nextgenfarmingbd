@@ -29,8 +29,9 @@ export interface IOrder extends Document {
     country: string;
   };
   paymentMethod: string;
-  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded' | 'received' | 'cancel';
   notes?: string;
+  deliveryDate?: Date;
   viewedByAdmin: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -136,12 +137,15 @@ const OrderSchema: Schema = new Schema({
   },
   paymentStatus: {
     type: String,
-    enum: ['pending', 'paid', 'failed', 'refunded'],
+    enum: ['pending', 'paid', 'failed', 'refunded', 'received', 'cancel'],
     default: 'pending',
     index: true,
   },
   notes: {
     type: String,
+  },
+  deliveryDate: {
+    type: Date,
   },
   viewedByAdmin: {
     type: Boolean,
@@ -157,4 +161,8 @@ OrderSchema.index({ userId: 1, createdAt: -1 });
 OrderSchema.index({ status: 1 });
 OrderSchema.index({ orderNumber: 1 });
 
+// In development, clear cached model so schema changes are picked up
+if (process.env.NODE_ENV === 'development' && mongoose.models.Order) {
+  delete mongoose.models.Order;
+}
 export default mongoose.models.Order || mongoose.model<IOrder>('Order', OrderSchema);
