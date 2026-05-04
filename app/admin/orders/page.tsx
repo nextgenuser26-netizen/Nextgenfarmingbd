@@ -606,6 +606,7 @@ export default function AdminOrders() {
                 <th>Payment Method</th>
                 <th>Payment Status</th>
                 <th>Date</th>
+                <th>Delivery Date</th>
               </tr>
             </thead>
             <tbody>
@@ -619,6 +620,7 @@ export default function AdminOrders() {
                   <td>${order.paymentMethod}</td>
                   <td>${order.paymentStatus}</td>
                   <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td>${order.status === 'pending' ? 'Pending' : (order.deliveryDate ? new Date(order.deliveryDate).toLocaleDateString() : 'Pending')}</td>
                 </tr>
               `).join('')}
             </tbody>
